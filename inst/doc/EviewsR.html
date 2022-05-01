@@ -12,7 +12,7 @@
 
 <meta name="author" content="Sagiru Mati" />
 
-<meta name="date" content="2022-03-31" />
+<meta name="date" content="2022-05-01" />
 
 <title>EviewsR: Seamless Integration of Eviews and R</title>
 
@@ -335,19 +335,10 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">EviewsR: Seamless Integration of Eviews and
 R</h1>
 <h4 class="author">Sagiru Mati</h4>
-<h4 class="date">2022-03-31</h4>
+<h4 class="date">2022-05-01</h4>
 
 
 
-<div id="about-the-author" class="section level1">
-<h1>About the Author</h1>
-<p>The author of this package, <strong>Sagiru Mati</strong>, obtained
-his PhD in Economics from the Near East University, North Cyprus. He
-works at the Department of Economics, Yusuf Maitama Sule (Northwest)
-University, Kano, Nigeria. Please visit his <a href="https://smati.com.ng">website</a> for more details.</p>
-<p>Please follow his publications on <strong>ORCID:
-0000-0003-1413-3974</strong></p>
-</div>
 <div id="about-eviewsr" class="section level1">
 <h1>About EviewsR</h1>
 <p>EviewsR is an R package that can run Eviews program from R. It also
@@ -365,10 +356,19 @@ package.</p>
 </div>
 <div id="setup" class="section level1">
 <h1>Setup</h1>
-<p>To run the package successfully, you need to rename the Eviews
-executable to <code>eviews</code> and then add the EViews installation
-folder to path. Alternatively, you can use <code>set_eviews_path</code>
-function to set the EViews path as follows:</p>
+<p>To run the package successfully, you need to do one of the
+following</p>
+<ul>
+<li><p>Don’t do anything if the name of EViews executable is one of the
+following: <code>EViews12_x64</code>, <code>EViews12_x86</code>,
+<code>EViews11_x64</code>, <code>EViews11_x86</code>,
+<code>EViews10</code>. The package will find the executable
+automatically.</p></li>
+<li><p>Rename the Eviews executable to <code>eviews</code> or one of the
+names above.</p></li>
+<li><p>Alternatively, you can use <code>set_eviews_path</code> function
+to set the path the EViews executable as follows:</p></li>
+</ul>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set_eviews_path</span>(<span class="st">&quot;C:/Program Files (x86)/EViews 10/EViews10.exe&quot;</span>)</span></code></pre></div>
 </div>
 <div id="usage" class="section level1">
@@ -382,13 +382,14 @@ library(EviewsR)
 <h1>Creating a workfile from R</h1>
 <p>An Eviews workfile can be created using <code>eviews_wfcreate</code>
 function in R.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_wfcreate</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>,<span class="at">page=</span><span class="st">&quot;EviewsR_page&quot;</span>,<span class="at">frequency =</span> <span class="st">&quot;m&quot;</span>,<span class="at">start_date =</span> <span class="st">&quot;1990&quot;</span>,<span class="at">end_date =</span> <span class="st">&quot;2022&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_wfcreate</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>,<span class="at">page=</span><span class="st">&quot;EviewsR_page&quot;</span>,<span class="at">frequency =</span> <span class="st">&quot;m&quot;</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">start_date =</span> <span class="st">&quot;1990&quot;</span>,<span class="at">end_date =</span> <span class="st">&quot;2022&quot;</span>)</span></code></pre></div>
 </div>
 <div id="eviews-chunk" class="section level1">
 <h1>Eviews chunk</h1>
 <p>A chunk for Eviews can be created by supplying <code>eviews</code> as
 the engine name as shown below:</p>
-<pre><code>```{eviews EviewsR,eval=T,echo=T} 
+<pre><code>```{eviews EviewsR,eval=T} 
     &#39;This program is created in R Markdown with the help of EviewsR package
   %path=@runpath
   cd %path
@@ -405,13 +406,16 @@ the engine name as shown below:</p>
   freeze(EviewsR_Plot,mode=overwrite) y.line
   wfsave EviewsR_workfile
 ```  </code></pre>
-<p>The <span class="math inline">\(R^2\)</span> of the OLS equation is
-.</p>
 <p>The above chunk creates an Eviews program with the chunk’s content,
 then automatically open Eviews and run the program, which will create an
 Eviews workfile with pages containing monthly sample from 2000 to 2022.
 The program will also save an Eviews workfile named <code>EviewsR</code>
 in the current directory.</p>
+<p>The <code>eviews</code> chunk automatically returns the outputs of
+each equation object as a dataframe, accessible via
+<code>eviews$equationName</code>. For example, The <span class="math inline">\(R^2\)</span> of the <code>ols</code> equation
+object is , which can be accessed using
+<code>`r eviews$ols$r2[1]`</code>.</p>
 </div>
 <div id="executing-eviews-commands-in-r" class="section level1">
 <h1>Executing EViews commands in R</h1>
@@ -452,7 +456,7 @@ Eviews object in the existing EViews workfile.</p>
 results of the OLS generated by the Eviews chunk using the following R
 chunk;</p>
 <p>For the OLS result only:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">knitr.kable.NA =</span> <span class="st">&#39;&#39;</span>)</span>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># options(knitr.kable.NA = &#39;&#39;)</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">import_table</span>(<span class="at">wf=</span><span class="st">&quot;EViewsR_workfile&quot;</span>,<span class="at">page=</span><span class="st">&quot;EviewsR_page&quot;</span>,<span class="at">table_name =</span> <span class="st">&quot;EViewsrOLS&quot;</span>,<span class="at">table_range =</span> <span class="st">&quot;r7c1:r10c5&quot;</span>,<span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div>
 </div>
 <div id="saving-eviews-workfile" class="section level1">
@@ -491,7 +495,7 @@ Eviews.</p>
 </div>
 <div id="eviews-graph" class="section level1">
 <h1>EViews graph</h1>
-<p>EViews graph can be included in R Markdown by
+<p>EViews graph can be included in R Markdown or Quarto document by
 <code>eviews_graph</code> function.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>y<span class="ot">=</span><span class="fu">runif</span>(<span class="dv">100</span>)</span>
@@ -500,6 +504,21 @@ Eviews.</p>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a> <span class="fu">eviews_graph</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>,<span class="at">page =</span> <span class="st">&quot;EviewsR_page&quot;</span>,<span class="at">series=</span><span class="st">&quot;x y&quot;</span>,<span class="at">mode =</span> <span class="st">&quot;overwrite&quot;</span>,<span class="at">options =</span> <span class="st">&quot;m&quot;</span>,<span class="at">merge_graphs =</span>F,<span class="at">start_date=</span><span class="st">&quot;1&quot;</span>,<span class="at">frequency=</span><span class="st">&quot;5&quot;</span>,<span class="at">save_path =</span> <span class="st">&#39;&#39;</span>)</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a> </span></code></pre></div>
+</div>
+<div id="demo" class="section level1">
+<h1>Demo</h1>
+<p>The demo files are included and can be accessed via
+demo(package=“EviewsR”)</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">create_object</span>())</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">eviews_graph</span>())</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">eviews_wfcreate</span>())</span></code></pre></div>
+</div>
+<div id="template" class="section level1">
+<h1>Template</h1>
+<p>Template for R Markdown is created. Go to
+<code>file-&gt;New File-&gt;R Markdown-&gt; From Template-&gt;EviewsR</code>.</p>
+<p><br><br><br><br></p>
+<p>Please download the example files from <a href="https://github.com/sagirumati/EviewsR/tree/master/inst/examples/">Github</a>.</p>
 </div>
 
 

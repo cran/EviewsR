@@ -38,14 +38,31 @@ Use this function to simulate a random walk process using an `EViews` engine.
 library(EviewsR)
 \dontrun{
 
-rwalk(wf="",series="X Y Z",page="",rndseed=12345,frequency="M",
+rwalk(series="X Y Z",rndseed=12345,frequency="M",
 num_observations=100)
 
 plot(eviews$XYZ[[2]],ylab = "EViewsR",type = "l",col="red")
 
+rwalk(wf="EviewsR_exec_commands",series="rw1 rw2 rw3",rndseed=12345,frequency="M")
+
+head(eviews$rw1rw2rw3)
 }
 }
 \seealso{
-eng_eviews, eviews_commands, eviews_graph, eviews_import, eviews_object, eviews_pagesave, rwalk, eviews_wfcreate, eviews_wfsave, export, import_table, import
+Other important functions: 
+\code{\link{EviewsR}},
+\code{\link{create_object}()},
+\code{\link{eng_eviews}()},
+\code{\link{eviews_graph}()},
+\code{\link{eviews_import}()},
+\code{\link{eviews_pagesave}()},
+\code{\link{eviews_wfcreate}()},
+\code{\link{eviews_wfsave}()},
+\code{\link{exec_commands}()},
+\code{\link{export}()},
+\code{\link{import_table}()},
+\code{\link{import}()},
+\code{\link{set_eviews_path}()}
 }
+\concept{important functions}
 \keyword{documentation}

@@ -21,12 +21,18 @@
 #'
 #' @examples library(EviewsR)
 #' \dontrun{
-#' x=runif(100); y=runif(100); data=data.frame(x,y);write.csv(data,"eviewsr.csv",row.names = FALSE)
+#' x=runif(100); y=runif(100); data=data.frame(x,y)
+#' write.csv(data,"EviewsR_eviews_import.csv",row.names = FALSE)
 #'
-#' eviews_import(source_description = "eviewsr.csv",start_date = "1990",frequency = "m",
+#' eviews_import(source_description = "EviewsR_eviews_import.csv",start_date = "1990",frequency = "m",
 #' rename_string = "x ab",smpl_string = "1990m10 1992m10")
+#'
+#' Alternatively, use the dataframe as the source_description
+#'
+#' eviews_import(source_description = data,wf="EviewsR_eviews_import1",start_date = "1990",
+#' frequency = "m",rename_string = "x ab",smpl_string = "1990m10 1992m10")
 #'}
-#' @seealso eng_eviews, exec_commands, eviews_graph, eviews_import, create_object, eviews_pagesave, rwalk, eviews_wfcreate, eviews_wfsave, export, import_table, import
+#' @family important functions
 #' @keywords documentation
 #' @export
 eviews_import=function(source_description="",wf="",type="",options="",smpl_string="",genr_string="",rename_string="",frequency="",start_date="",id="",destid="",append=FALSE,save_path=""){
@@ -44,7 +50,7 @@ eviews_import=function(source_description="",wf="",type="",options="",smpl_strin
 
     fileName=tempfile("EVIEWS", ".", ".prg")
   options=paste0('%options=',shQuote(options))
-  source_description=gsub("/","\\\\",source_description)
+  # source_description=gsub("/","\\\\",source_description)
   source_description=paste0("%source_description=",shQuote(source_description))
   smpl_string=paste0("%smpl_string=",shQuote(smpl_string))
   genr_string=paste0("%genr_string=",shQuote(genr_string))
@@ -121,7 +127,7 @@ eviews_import=function(source_description="",wf="",type="",options="",smpl_strin
   %wf=@wfname
 
   if %save_path<>"" then
-  %save_path=%save_path+"\"
+  %save_path=%save_path+"/"
   endif
 
   wfsave {%save_path}{%wf}

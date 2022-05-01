@@ -23,13 +23,11 @@
 #'
 #' @examples library(EviewsR)
 #' \dontrun{
-#' exec_commands(c("wfcreate(wf=Workfile,page=Page) m 1990 2022",
-#' "genr y=rnd","genr x=rnd","save workfile","exit"))
+#' demo(exec_commands)
+#' eviews_graph(wf="EviewsR_exec_commands",page = "page",series="x y",mode = "overwrite",options = "m")
 #'
-#' eviews_graph(wf="workfile",page = "page",series="x y",mode = "overwrite",options = "m")
-#' unlink("workfile.wf1")
 #'}
-#' @seealso eng_eviews, exec_commands, eviews_graph, eviews_import, create_object, eviews_pagesave, rwalk, eviews_wfcreate, eviews_wfsave, export, import_table, import
+#' @family important functions
 #' @keywords documentation
 #' @export
 eviews_graph=function(series="",wf="",page="",mode="overwrite",graph_command="line",options="m",frequency="7",start_date="",save_options=c("t=png","d=300","color"),save_path="",graph_procs=c('textdefault font("Times",20,-b,-i,-u,-s)','align(2,1,1)'),datelabel="",merge_graphs=FALSE){

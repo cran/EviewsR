@@ -38,13 +38,27 @@ Use this function to save an `EViews` workfile  from R
 \examples{
 library(EviewsR)
 \dontrun{
- exec_commands(c("wfcreate(wf=Workfile,page=Page) m 1990 2022",
-"genr y=rnd","genr x=rnd","save workfile","exit"))
+ demo(exec_commands)
 
-eviews_wfsave(wf="workfile",source_description = "wfsave.csv",drop_list = "x")
+eviews_wfsave(wf="EviewsR_exec_commands",source_description = "EviewsR_eviews_wfsave.csv",
+drop_list = "x")
 }
 }
 \seealso{
-eng_eviews, exec_commands, eviews_graph, eviews_import, create_object, eviews_pagesave, rwalk, eviews_wfcreate, export, import_table, import
+Other important functions: 
+\code{\link{EviewsR}},
+\code{\link{create_object}()},
+\code{\link{eng_eviews}()},
+\code{\link{eviews_graph}()},
+\code{\link{eviews_import}()},
+\code{\link{eviews_pagesave}()},
+\code{\link{eviews_wfcreate}()},
+\code{\link{exec_commands}()},
+\code{\link{export}()},
+\code{\link{import_table}()},
+\code{\link{import}()},
+\code{\link{rwalk}()},
+\code{\link{set_eviews_path}()}
 }
+\concept{important functions}
 \keyword{documentation}

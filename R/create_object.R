@@ -16,15 +16,12 @@
 #'
 #' @examples library(EviewsR)
 #' \dontrun{
-#' eviews_wfcreate(wf="EviewsR_workfile",page="EviewsR_page",frequency = "m",start_date = "1990",
-#' end_date = "2022")
+#' demo(exec_commands)
 #'
-#'exec_commands(c("open EviewsR_workfile","genr y=rnd","genr x=rnd","save","exit"))
-#'
-#' create_object(wf="EviewsR_workfile",action="equation",action_opt="",
-#' object_name="eviews_equation",view_or_proc="ls",options_list="",arg_list="y ar(1)")
+#' create_object(wf="EviewsR_exec_commands",action="equation",action_opt="",
+#' object_name="EviewsR_create_object",view_or_proc="ls",options_list="",arg_list="y ar(1)")
 #'}
-#' @seealso eng_eviews, exec_commands, eviews_graph, eviews_import, create_object, eviews_pagesave, rwalk, eviews_wfcreate, eviews_wfsave, export, import_table, import
+#' @family important functions
 #' @keywords documentation
 #' @export
 create_object=function(wf="",page="",action="",action_opt="",object_name="",view_or_proc="",options_list="",arg_list

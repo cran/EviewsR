@@ -22,18 +22,43 @@ Use this function to execute `EViews` commands from R
 \examples{
 library(EviewsR)
 \dontrun{
-exec_commands(c("wfcreate(wf=Workfile,page=Page) m 2000 2022","save workfile","exit"))
-exec_commands(c("genr y=rnd","y.line"),wf="Workfile")
-unlink("workfile.wf1")
 # The first example creates an `EViews` workfile with monthly frequency from 1990 2021,
 # then save the workfile in the current working directory
 
+exec_commands(c("wfcreate(wf=EviewsR_exec_commands,page=Page) m 2000 2022",
+"save EviewsR_exec_commands","exit"))
+
+
 # The second example opens the `EViews` workfile and then generate a random series
-# named `y` and plot its line graph.
-# The third line deletes the workfile from your directory.
+# named `y` and plots its line graph. It also freezes `ols` equation as `EviewsROLS`
+
+eviewsCommands=r'(genr y=rnd
+genr x=rnd
+equation ols.ls y c x
+freeze(EviewsROLS,mode=overwrite) ols)'
+
+exec_commands(commands=eviewsCommands,wf="EviewsR_exec_commands")
+
+# unlink("EviewsR_exec_commands.wf1")
+
+
 }
 }
 \seealso{
-eng_eviews, eviews_graph, eviews_import, create_object, eviews_pagesave, rwalk, eviews_wfcreate, eviews_wfsave, export, import_table, import
+Other important functions: 
+\code{\link{EviewsR}},
+\code{\link{create_object}()},
+\code{\link{eng_eviews}()},
+\code{\link{eviews_graph}()},
+\code{\link{eviews_import}()},
+\code{\link{eviews_pagesave}()},
+\code{\link{eviews_wfcreate}()},
+\code{\link{eviews_wfsave}()},
+\code{\link{export}()},
+\code{\link{import_table}()},
+\code{\link{import}()},
+\code{\link{rwalk}()},
+\code{\link{set_eviews_path}()}
 }
+\concept{important functions}
 \keyword{documentation}

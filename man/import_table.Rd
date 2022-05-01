@@ -126,13 +126,26 @@ Use this function to import `EViews` table object as `kable`
 \examples{
 library(EviewsR)
 \dontrun{
-exec_commands(c("wfcreate(wf=Workfile,page=Page) m 1990 2022","genr y=rnd","genr x=rnd",
-"equation ols.ls y c x","freeze(EviewsROLS,mode=overwrite) ols","save workfile","exit"))
+demo(exec_commands)
 
-import_table(wf="WORKFILE",page="PAGE",table_name="EviewsROLS",format="pandoc")
+import_table(wf="EviewsR_exec_commands",page="page",table_name="EviewsROLS",format="pandoc")
 }
 }
 \seealso{
-eng_eviews, exec_commands, eviews_graph, eviews_import, create_object, eviews_pagesave, rwalk, eviews_wfcreate, eviews_wfsave, export, import
+Other important functions: 
+\code{\link{EviewsR}},
+\code{\link{create_object}()},
+\code{\link{eng_eviews}()},
+\code{\link{eviews_graph}()},
+\code{\link{eviews_import}()},
+\code{\link{eviews_pagesave}()},
+\code{\link{eviews_wfcreate}()},
+\code{\link{eviews_wfsave}()},
+\code{\link{exec_commands}()},
+\code{\link{export}()},
+\code{\link{import}()},
+\code{\link{rwalk}()},
+\code{\link{set_eviews_path}()}
 }
+\concept{important functions}
 \keyword{documentation}

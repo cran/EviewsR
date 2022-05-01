@@ -6,8 +6,7 @@ knitr::opts_chunk$set(
   eval=F
 )
 library(EviewsR)
-set_eviews_path('eviews12_X64')
-# set_eviews_path()
+# set_eviews_path('EViews12_X64')
 library(knitr)
 
 ## ----installation,eval=F------------------------------------------------------
@@ -22,7 +21,8 @@ library(knitr)
 #  
 
 ## ----wfcreate-----------------------------------------------------------------
-#  eviews_wfcreate(wf="EviewsR_workfile",page="EviewsR_page",frequency = "m",start_date = "1990",end_date = "2022")
+#  eviews_wfcreate(wf="EviewsR_workfile",page="EviewsR_page",frequency = "m",
+#  start_date = "1990",end_date = "2022")
 #  
 
 ## ----execCommands-------------------------------------------------------------
@@ -51,7 +51,7 @@ library(knitr)
 #  
 
 ## ----importTable--------------------------------------------------------------
-#  options(knitr.kable.NA = '')
+#  # options(knitr.kable.NA = '')
 #  import_table(wf="EViewsR_workfile",page="EviewsR_page",table_name = "EViewsrOLS",table_range = "r7c1:r10c5",digits=3)
 
 ## ----wfsave-------------------------------------------------------------------
@@ -82,4 +82,9 @@ library(knitr)
 #  
 #   eviews_graph(wf="EviewsR_workfile",page = "EviewsR_page",series="x y",mode = "overwrite",options = "m",merge_graphs =F,start_date="1",frequency="5",save_path = '')
 #  
+
+## ----demo---------------------------------------------------------------------
+#  demo(create_object())
+#  demo(eviews_graph())
+#  demo(eviews_wfcreate())
 

@@ -10,12 +10,12 @@
 #'
 #' @examples library(EviewsR)
 #' \dontrun{
-#'  exec_commands(c("wfcreate(wf=Workfile,page=Page) m 1990 2022",
-#' "genr y=rnd","genr x=rnd","save workfile","exit"))
+#'  demo(exec_commands)
 #'
-#' eviews_wfsave(wf="workfile",source_description = "wfsave.csv",drop_list = "x")
+#' eviews_wfsave(wf="EviewsR_exec_commands",source_description = "EviewsR_eviews_wfsave.csv",
+#' drop_list = "x")
 #'}
-#' @seealso eng_eviews, exec_commands, eviews_graph, eviews_import, create_object, eviews_pagesave, rwalk, eviews_wfcreate, export, import_table, import
+#' @family important functions
 #' @keywords documentation
 #' @export
 eviews_wfsave=function(wf="",page="",options="",source_description="",table_description="",keep_list="",drop_list="",keepmap_list="",dropmap_list="",smpl_spec=""){
