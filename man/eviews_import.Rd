@@ -2,24 +2,36 @@
 % Please edit documentation in R/eviews_import.R
 \name{eviews_import}
 \alias{eviews_import}
-\title{Import data to `EViews` workfile}
+\title{Import data to \code{EViews} workfile}
 \usage{
-eviews_import(source_description="",wf="",type="",options="",smpl_string="",
-genr_string="",rename_string="",frequency="",start_date="",id="",destid="",
-append=FALSE,save_path="")
+eviews_import(
+  source_description = "",
+  wf = "",
+  type = "",
+  options = "",
+  smpl_string = "",
+  genr_string = "",
+  rename_string = "",
+  frequency = "",
+  start_date = "",
+  id = "",
+  destid = "",
+  append = FALSE,
+  save_path = dirname(wf)
+)
 }
 \arguments{
 \item{source_description}{Description of the file from which the data is to be imported. The specification of the description is usually just the path and file name of the file.}
 
-\item{wf}{Object or a character string representing the name of an `EViews` workfile.}
+\item{wf}{Object or a character string representing the name of an \code{EViews} workfile.}
 
-\item{type}{Optional. Specify the file type, it can values allowed by `EViews` \code{import} commands like \code{access}, \code{text}. For the most part, you should not need to specify a “type=” option as EViews will automatically determine the type from the filename.}
+\item{type}{Optional. Specify the file type, it can values allowed by \code{EViews} \code{import} commands like \code{access}, \code{text}. For the most part, you should not need to specify a “type=” option as EViews will automatically determine the type from the filename.}
 
-\item{options}{Optional.Specify the `EViews` \code{options} for \code{import} command like \code{resize}, \code{link}, \code{page=page_name}.}
+\item{options}{Optional.Specify the \code{EViews} \code{options} for \code{import} command like \code{resize}, \code{link}, \code{page=page_name}.}
 
 \item{smpl_string}{Optional. Specify the sample to be used for the data import.}
 
-\item{genr_string}{Optional. Any valid `EViews` series creation expression to be used to generate a new series in the workfile as part of the import procedure.}
+\item{genr_string}{Optional. Any valid \code{EViews} series creation expression to be used to generate a new series in the workfile as part of the import procedure.}
 
 \item{rename_string}{Optional. Pairs of old object names followed by the new name to be used to rename some of the imported series.}
 
@@ -27,32 +39,32 @@ append=FALSE,save_path="")
 
 \item{start_date}{Object or a character string representing the \code{start date}. It should be left blank for undated (when the \code{frequency} is \code{u}).}
 
-\item{id}{Name of `EViews` ID series. Required for `EViews` \code{Match-Merge Import}.}
+\item{id}{Name of \code{EViews} ID series. Required for \code{EViews} \code{Match-Merge Import}.}
 
-\item{destid}{Name of the destination ID.  Required for `EViews` \code{Match-Merge Import}.}
+\item{destid}{Name of the destination ID.  Required for \code{EViews} \code{Match-Merge Import}.}
 
-\item{append}{Logical, whether to append to the bottom of the `EViews` workfile page or not.}
+\item{append}{Logical, whether to append to the bottom of the \code{EViews} workfile page or not.}
 
-\item{save_path}{Specify the path to save the `Eviews` workfile}
+\item{save_path}{Specify the path to save the \code{Eviews} workfile}
 }
 \value{
 An EViews workfile
 }
 \description{
-Use this function to import data to `EViews` workfile from R
+Use this function  in R, R Markdown and Quarto to import data to \code{EViews} workfile.
 }
 \examples{
 library(EviewsR)
 \dontrun{
-x=runif(100); y=runif(100); data=data.frame(x,y)
-write.csv(data,"EviewsR_eviews_import.csv",row.names = FALSE)
+Data=data.frame(x=cumsum(rnorm(100)),y=cumsum(rnorm(100)))
+write.csv(Data,"eviews_import.csv",row.names = FALSE)
 
-eviews_import(source_description = "EviewsR_eviews_import.csv",start_date = "1990",frequency = "m",
+eviews_import(source_description = "eviews_import.csv",start_date = "1990",frequency = "m",
 rename_string = "x ab",smpl_string = "1990m10 1992m10")
 
-Alternatively, use the dataframe as the source_description
+# Alternatively, use the dataframe as the source_description
 
-eviews_import(source_description = data,wf="EviewsR_eviews_import1",start_date = "1990",
+eviews_import(source_description = Data,wf="eviews_import1",start_date = "1990",
 frequency = "m",rename_string = "x ab",smpl_string = "1990m10 1992m10")
 }
 }
@@ -66,8 +78,14 @@ Other important functions:
 \code{\link{eviews_wfcreate}()},
 \code{\link{eviews_wfsave}()},
 \code{\link{exec_commands}()},
+\code{\link{export_dataframe}()},
 \code{\link{export}()},
+\code{\link{import_equation}()},
+\code{\link{import_graph}()},
+\code{\link{import_kable}()},
+\code{\link{import_series}()},
 \code{\link{import_table}()},
+\code{\link{import_workfile}()},
 \code{\link{import}()},
 \code{\link{rwalk}()},
 \code{\link{set_eviews_path}()}

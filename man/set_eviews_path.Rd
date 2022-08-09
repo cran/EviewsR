@@ -2,9 +2,9 @@
 % Please edit documentation in R/set_eviews_path.R
 \name{set_eviews_path}
 \alias{set_eviews_path}
-\title{Set `EViews` path}
+\title{Set \code{EViews} path}
 \usage{
-set_eviews_path(engine_path="eviews")
+set_eviews_path(engine_path = "eviews")
 }
 \arguments{
 \item{engine_path}{Path to the EViews executable}
@@ -13,7 +13,7 @@ set_eviews_path(engine_path="eviews")
 Character
 }
 \description{
-Use this function to set `EViews` path
+Use this function to set \code{EViews} path. It is only useful when the \code{EViews} is not installed in standard directory, or when there are multiple \code{EViews} executables and the user wants to use older version of \code{EViews}.
 }
 \examples{
 library(EviewsR)
@@ -32,8 +32,14 @@ Other important functions:
 \code{\link{eviews_wfcreate}()},
 \code{\link{eviews_wfsave}()},
 \code{\link{exec_commands}()},
+\code{\link{export_dataframe}()},
 \code{\link{export}()},
+\code{\link{import_equation}()},
+\code{\link{import_graph}()},
+\code{\link{import_kable}()},
+\code{\link{import_series}()},
 \code{\link{import_table}()},
+\code{\link{import_workfile}()},
 \code{\link{import}()},
 \code{\link{rwalk}()}
 }

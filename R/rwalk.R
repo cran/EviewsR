@@ -1,11 +1,10 @@
-#' Simulate a random walk process using an `EViews` engine from R.
+#' Simulate a random walk process using an `EViews` engine.
 #'
-#' Use this function to simulate a random walk process using an `EViews` engine.
+#' Use this function to simulate a random walk process using an `EViews` engine from R, R Markdown or Quarto.
 #'
-#' @usage rwalk(series="",wf="",page="",drift=NA,rndseed=NA,frequency="m",
-#' start_date="1990",end_date="2020",num_cross_sections=NA,num_observations=NA)
 #' @inheritParams eviews_wfcreate
 #' @inheritParams eviews_import
+#' @inheritParams import_series
 #' @param series Names of series for the random walk.
 #' @param rndseed Set the `seed` for `Eviews` random number generator.
 #' @param drift Numeric value as the drift term for random walk.
@@ -14,42 +13,61 @@
 #' @examples library(EviewsR)
 #' \dontrun{
 #'
-#' rwalk(series="X Y Z",rndseed=12345,frequency="M",
-#' num_observations=100)
+#' # Simulate random walk and return as a dataframe object
 #'
-#' plot(eviews$XYZ[[2]],ylab = "EViewsR",type = "l",col="red")
+#' rwalk(series="a b e",rndseed=12345,start_date = 1990,frequency="m",num_observations=100)
 #'
-#' rwalk(wf="EviewsR_exec_commands",series="rw1 rw2 rw3",rndseed=12345,frequency="M")
+#' library(ggplot2)
+#'
+#' ggplot(eviews$abe,aes(x=date))+geom_line(aes(y=a,color="a"))+
+#' geom_line(aes(y=b,color="b"))+geom_line(aes(y=e,color="e"))+labs(colour='',x="",y="")
+#'
+#' # To simulate random walk and return as an `xts` object
+#'
+#' rwalk(series="X Y Z",rndseed=12345,start_date = 1990,frequency="m",num_observations=100,class="xts")
+#'
+#' plot(eviews$xyz)
+#'
+#' autoplot(eviews$xyz,facet="")+xlab("")
+#'
+#'
+#' plot(eviews$XYZ)
+#'
+#' # To simulate random walk series on existing workfile
+#'
+#' eviews_wfcreate(wf="rwalk",page="rwalk",frequency="7",start_date=2020,end_date="2022")
+#' rwalk(wf="rwalk",series="rw1 rw2 rw3",rndseed=12345,frequency="M")
 #'
 #' head(eviews$rw1rw2rw3)
 #'}
 #' @family important functions
 #' @keywords documentation
 #' @export
-rwalk=function(series="",wf="",page="",drift=NA,rndseed=NA,frequency="m",start_date="1990",end_date="2020",num_cross_sections=NA,num_observations=NA){
+rwalk=function(series="",wf="",page="",drift=NA,rndseed=NA,frequency="",start_date="",end_date="",num_cross_sections=NA,num_observations=NA,class="df"){
   fileName=tempfile("EviewsR", ".", ".prg")
+
+wf2=wf
 
   if(wf=="") save="" else save="save"
   if(wf=="") {
    wf=basename(gsub(".prg","",fileName));if(page=="") page=wf
      eviews_wfcreate(wf=wf,page=wf,frequency=frequency,start_date=start_date,end_date=end_date,num_observations = num_observations)
-  on.exit(unlink(paste0(wf,".wf1")))
     }
 
   wf1=paste0(wf,".wf1")
-  wf=paste0('%wf=',shQuote(wf))
-  save=paste0('%save=',shQuote(save))
-  page=paste0('%page=',shQuote(page))
+  wf=paste0('%wf=',shQuote_cmd(wf))
+  save=paste0('%save=',shQuote_cmd(save))
+  page=paste0('%page=',shQuote_cmd(page))
   rndseed=paste0('!rndseed=',rndseed)
   drift=paste0("!drift=",drift)
   num_observations=paste0("!num_observations=",num_observations)
   num_cross_sections=paste0("!num_cross_sections=",num_cross_sections)
 
   series1=paste(series,collapse = "")
-  series1=gsub(" ","",series1)
-  series=paste0("%series=",shQuote(paste(series,collapse = " ")))
+  series1=gsub(" ","",series1) %>% tolower
+  series=paste0("%series=",shQuote_cmd(paste(series,collapse = " ")))
 
-    eviews_code=r'(
+    eviewsCode=r'(
     if %wf<>"" then
     open {%wf}
     endif
@@ -109,25 +127,35 @@ rwalk=function(series="",wf="",page="",drift=NA,rndseed=NA,frequency="m",start_d
     if %save="save" then
     wfsave {%wf}
     endif
-    delete(noerr) wn* randomwalk_group*
+'    delete(noerr) wn* randomwalk_group*
     exit)'
 
-  writeLines(c(eviews_path(),save,wf,page,rndseed,drift,series,eviews_code),fileName)
+  writeLines(c(eviews_path(),save,wf,page,rndseed,drift,series,eviewsCode),fileName)
     system_exec()
     on.exit(unlink_eviews(),add = TRUE)
-    on.exit(unlink(c("randomwalk_group.csv")),add = TRUE)
+    on.exit(unlink(c("randomwalk_group.csv",fileName)),add = TRUE)
 
-      if(!exists("eviews") || !is.environment(eviews)) eviews<<-new.env()
+    if(wf2=="") on.exit(unlink(wf1),add = TRUE)
+
+
+    chunkLabel=opts_current$get('label')
+
+    envName=chunkLabel %n% "eviews" %>% gsub("^fig-","",.) %>% gsub("[._-]","",.)
+    if(!identical(envName,"eviews")) assign(envName,new.env(),envir=knit_global())
+    # if(identical(envName,"eviews")){
+    #   if(!exists("eviews") || !is.environment(eviews)) assign(envName,new.env(),envir=globalenv())
+    # }
 
     dataFrame=read.csv("randomwalk_group.csv")
 
-    colName=colnames(dataFrame) %>% gsub(".*_date_$","date",.)
 
-    colnames(dataFrame)=colName
+    if(grepl('date',colnames(dataFrame)[1])){
+      colnames(dataFrame)[1]="date"
+      dataFrame$date=as.POSIXct(dataFrame$date)
+      if(identical(class,'xts')) dataFrame=xts(dataFrame[-1],dataFrame[[1]])
+    }
 
-    assign(series1,dataFrame,envir = eviews)
+    assign(series1,dataFrame,envir=get(envName,envir = parent.frame()))
 
 }
 
-
-# rwalk(wf="",series="X Y Z",page="",rndseed=NA,num_observations=1)

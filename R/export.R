@@ -2,16 +2,15 @@
 #'
 #' Use this function to export R dataframe as an `EViews` workfile
 #'
-#' @usage export(source_description="",wf="",start_date = "",frequency = "",save_path = "")
 #' @inheritParams eviews_wfcreate
 #' @inheritParams eviews_pagesave
 #' @return An EViews workfile.
 #'
 #' @examples library(EviewsR)
 #' \dontrun{
-#' x=runif(100); y=runif(100); data=data.frame(x,y)
+#' Data=data.frame(x=cumsum(rnorm(100)),y=cumsum(rnorm(100)))
 #'
-#' export(wf="EviewR_export",source_description=data,start_date = '1990',frequency = "m")
+#' export(wf="export",source_description=Data,start_date = '1990',frequency = "m")
 #'}
 #' @family important functions
 #' @keywords documentation

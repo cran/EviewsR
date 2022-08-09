@@ -2,9 +2,15 @@
 % Please edit documentation in R/export.R
 \name{export}
 \alias{export}
-\title{Export R dataframe as an `EViews` workfile}
+\title{Export R dataframe as an \code{EViews} workfile}
 \usage{
-export(source_description="",wf="",start_date = "",frequency = "",save_path = "")
+export(
+  source_description = "",
+  wf = "",
+  start_date = "",
+  frequency = "",
+  save_path = ""
+)
 }
 \arguments{
 \item{source_description}{Description of the file from which the data is to be imported. The specification of the description is usually just the path and file name of the file.}
@@ -15,20 +21,20 @@ export(source_description="",wf="",start_date = "",frequency = "",save_path = ""
 
 \item{frequency}{Object or a character string representing the frequency of a workfile page to be created. Only letters accepted by EViews are allowed. For example \code{u} for undated, \code{a} for annual, \code{m} for monthly and so on.}
 
-\item{save_path}{Specify where to save the `EViews` workfile.}
+\item{save_path}{Specify where to save the \code{EViews} workfile.}
 }
 \value{
 An EViews workfile.
 }
 \description{
-Use this function to export R dataframe as an `EViews` workfile
+Use this function to export R dataframe as an \code{EViews} workfile
 }
 \examples{
 library(EviewsR)
 \dontrun{
-x=runif(100); y=runif(100); data=data.frame(x,y)
+Data=data.frame(x=cumsum(rnorm(100)),y=cumsum(rnorm(100)))
 
-export(wf="EviewR_export",source_description=data,start_date = '1990',frequency = "m")
+export(wf="export",source_description=Data,start_date = '1990',frequency = "m")
 }
 }
 \seealso{
@@ -42,7 +48,13 @@ Other important functions:
 \code{\link{eviews_wfcreate}()},
 \code{\link{eviews_wfsave}()},
 \code{\link{exec_commands}()},
+\code{\link{export_dataframe}()},
+\code{\link{import_equation}()},
+\code{\link{import_graph}()},
+\code{\link{import_kable}()},
+\code{\link{import_series}()},
 \code{\link{import_table}()},
+\code{\link{import_workfile}()},
 \code{\link{import}()},
 \code{\link{rwalk}()},
 \code{\link{set_eviews_path}()}

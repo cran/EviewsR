@@ -2,42 +2,64 @@
 % Please edit documentation in R/create_object.R
 \name{create_object}
 \alias{create_object}
-\title{Create an `EViews` object on a workfile from R}
+\title{Create an \code{EViews} object on an existing workfile}
 \usage{
-create_object(wf="",page="",action="",action_opt="",object_name="",
-view_or_proc="",options_list="",arg_list="")
+create_object(
+  wf = "",
+  page = "",
+  action = "",
+  action_opt = "",
+  object_name = "",
+  view_or_proc = "",
+  options_list = "",
+  arg_list = "",
+  object_type = "",
+  options = "",
+  expression = ""
+)
 }
 \arguments{
-\item{wf}{Object or a character string representing the name of an `EViews` workfile.}
+\item{wf}{Object or a character string representing the name of an \code{EViews} workfile.}
 
-\item{page}{Object or a character string representing the name of an `EViews` workfile page.}
+\item{page}{Object or a character string representing the name of an \code{EViews} workfile page.}
 
-\item{action}{Any valid `EViews` command for `EViews` object declaration, like \code{freeze}, \code{do}, \code{equation}, \code{table}.}
+\item{action}{Any valid \code{EViews} command for \code{EViews} object declaration, like \code{freeze}, \code{do}, \code{equation}, \code{table}.}
 
-\item{action_opt}{An option that modifies the default behaviour of the `EViews` action.}
+\item{action_opt}{An option that modifies the default behaviour of the \code{EViews} action.}
 
-\item{object_name}{The name of the `EViews` object to be acted upon.}
+\item{object_name}{The name of the \code{EViews} object to be acted upon.}
 
-\item{view_or_proc}{The `EViews` object view or procedure to be performed.}
+\item{view_or_proc}{The \code{EViews} object view or procedure to be performed.}
 
-\item{options_list}{An option that modifies the default behaviour of the `EViews` view or procedure.}
+\item{options_list}{An option that modifies the default behaviour of the \code{EViews} view or procedure.}
 
-\item{arg_list}{A list of `EViews` view or procedure arguments.}
+\item{arg_list}{A list of \code{EViews} view or procedure arguments.}
+
+\item{object_type}{EViews object type such as \code{series}, \code{equation}.}
+
+\item{options}{Options for the \code{object_type}.}
+
+\item{expression}{Value to be assigned to the object}
 }
 \value{
 An EViews workfile
 }
 \description{
-Use this function to create an `EViews` object on a workfile from R
+Use this function in R, R Markdown or Quarto to create an \code{EViews} object on an existing workfile.
 }
 \examples{
 library(EviewsR)
 \dontrun{
 demo(exec_commands)
 
-create_object(wf="EviewsR_exec_commands",action="equation",action_opt="",
-object_name="EviewsR_create_object",view_or_proc="ls",options_list="",arg_list="y ar(1)")
+create_object(wf="exec_commands",action="equation",
+object_name="create_object",view_or_proc="ls",arg_list="y ar(1)")
+
+create_object(wf="exec_commands",object_name="x1",
+object_type="series",expression="y^2")
+
 }
+
 }
 \seealso{
 Other important functions: 
@@ -49,8 +71,14 @@ Other important functions:
 \code{\link{eviews_wfcreate}()},
 \code{\link{eviews_wfsave}()},
 \code{\link{exec_commands}()},
+\code{\link{export_dataframe}()},
 \code{\link{export}()},
+\code{\link{import_equation}()},
+\code{\link{import_graph}()},
+\code{\link{import_kable}()},
+\code{\link{import_series}()},
 \code{\link{import_table}()},
+\code{\link{import_workfile}()},
 \code{\link{import}()},
 \code{\link{rwalk}()},
 \code{\link{set_eviews_path}()}

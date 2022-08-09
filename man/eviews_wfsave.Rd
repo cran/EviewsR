@@ -2,45 +2,57 @@
 % Please edit documentation in R/eviews_wfsave.R
 \name{eviews_wfsave}
 \alias{eviews_wfsave}
-\title{Save an `EViews` workfile from R}
+\title{Save an \code{EViews} workfile.}
 \usage{
-eviews_wfsave(wf="",page="",options="",source_description="",
-table_description="",keep_list="",drop_list="",keepmap_list="",dropmap_list="",
-smpl_spec="")
+eviews_wfsave(
+  wf = "",
+  page = "",
+  options = "",
+  source_description = "",
+  table_description = "",
+  keep_list = "",
+  drop_list = "",
+  keepmap_list = "",
+  dropmap_list = "",
+  smpl_spec = "",
+  save_path = dirname(source_description)
+)
 }
 \arguments{
-\item{wf}{Object or a character string representing the name of an `EViews` workfile.}
+\item{wf}{Object or a character string representing the name of an \code{EViews} workfile.}
 
-\item{page}{Object or a character string representing the name of an `EViews` workfile page.}
+\item{page}{Object or a character string representing the name of an \code{EViews} workfile page.}
 
-\item{options}{Object or a character string of any of the acceptable `EViews` \code{pagesave} options, such as \code{noid}, \code{nomapval}, \code{nonames}.}
+\item{options}{Object or a character string of any of the acceptable \code{EViews} \code{pagesave} options, such as \code{noid}, \code{nomapval}, \code{nonames}.}
 
 \item{source_description}{The path and name of the file to be saved.}
 
 \item{table_description}{Further description of the \code{source_description} such as specifying the \code{range=arg}, \code{byrow}.}
 
-\item{keep_list}{Optional. Specify the list of `EViews` object to be saved.}
+\item{keep_list}{Optional. Specify the list of \code{EViews} object to be saved.}
 
-\item{drop_list}{Optional. Specify the list of `EViews` object to be dropped.}
+\item{drop_list}{Optional. Specify the list of \code{EViews} object to be dropped.}
 
-\item{keepmap_list}{Optional. Specify the list of patterns of `EViews` object to be saved.}
+\item{keepmap_list}{Optional. Specify the list of patterns of \code{EViews} object to be saved.}
 
-\item{dropmap_list}{Optional. Specify the list of patterns of `EViews` object to be dropped.}
+\item{dropmap_list}{Optional. Specify the list of patterns of \code{EViews} object to be dropped.}
 
-\item{smpl_spec}{Optional. Specify the `EViews` sample string}
+\item{smpl_spec}{Optional. Specify the \code{EViews} sample string}
+
+\item{save_path}{Object or a character string representing the path to the folder to save the \code{EViews} graphs. The current working directory is the default \code{save_path}. Specify the \code{save_path} only if you want the \code{EViews} graphs to live in different path from the current working directory.}
 }
 \value{
 An EViews workfile.
 }
 \description{
-Use this function to save an `EViews` workfile  from R
+Use this function  in R, R Markdown and Quarto to save an \code{EViews} workfile.
 }
 \examples{
 library(EviewsR)
 \dontrun{
  demo(exec_commands)
 
-eviews_wfsave(wf="EviewsR_exec_commands",source_description = "EviewsR_eviews_wfsave.csv",
+eviews_wfsave(wf="exec_commands",source_description = "eviews_wfsave.csv",
 drop_list = "x")
 }
 }
@@ -54,8 +66,14 @@ Other important functions:
 \code{\link{eviews_pagesave}()},
 \code{\link{eviews_wfcreate}()},
 \code{\link{exec_commands}()},
+\code{\link{export_dataframe}()},
 \code{\link{export}()},
+\code{\link{import_equation}()},
+\code{\link{import_graph}()},
+\code{\link{import_kable}()},
+\code{\link{import_series}()},
 \code{\link{import_table}()},
+\code{\link{import_workfile}()},
 \code{\link{import}()},
 \code{\link{rwalk}()},
 \code{\link{set_eviews_path}()}

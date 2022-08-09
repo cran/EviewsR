@@ -1,10 +1,6 @@
-#' Import `EViews` series to R as dataframe
+#' Import `EViews` series objects as dataframe
 #'
-#' Use this function to import `EViews` series to R as dataframe
-#'
-#' @usage import(object_name="",wf="",page="",options="",source_description="",
-#' table_description="",keep_list="",drop_list="",keepmap_list="",dropmap_list="",
-#' smpl_spec="")
+#' Use this function to import `EViews` series objects to R, R Markdown and Quarto as dataframe
 #'
 #' @param object_name Object name to be to store the imported `EViews` series.
 #' @inheritParams eviews_pagesave
@@ -34,19 +30,19 @@ import=function(object_name="",wf="",page="",options="",source_description="",ta
   fileName=tempfile("EVIEWS", ".", ".prg")
   source_description=tempfile("EviewsR", ".", ".csv")
   source_description_file=source_description
-  wf=paste0('%wf=',shQuote(wf))
-  page=paste0('%page=',shQuote(page))
-  options=paste0('%options=',shQuote(options))
-  source_description=paste0('%source_description=',shQuote(source_description))
-  table_description=paste0('%table_description=',shQuote(table_description))
-  keep_list=paste0('%keep_list=',shQuote(keep_list))
-  drop_list=paste0('%drop_list=',shQuote(drop_list))
-  keepmap_list=paste0('%keepmap_list=',shQuote(keepmap_list))
-  dropmap_list=paste0('%dropmap_list=',shQuote(dropmap_list))
-  smpl_spec=paste0('%smpl_spec=',shQuote(smpl_spec))
+  wf=paste0('%wf=',shQuote_cmd(wf))
+  page=paste0('%page=',shQuote_cmd(page))
+  options=paste0('%options=',shQuote_cmd(options))
+  source_description=paste0('%source_description=',shQuote_cmd(source_description))
+  table_description=paste0('%table_description=',shQuote_cmd(table_description))
+  keep_list=paste0('%keep_list=',shQuote_cmd(keep_list))
+  drop_list=paste0('%drop_list=',shQuote_cmd(drop_list))
+  keepmap_list=paste0('%keepmap_list=',shQuote_cmd(keepmap_list))
+  dropmap_list=paste0('%dropmap_list=',shQuote_cmd(dropmap_list))
+  smpl_spec=paste0('%smpl_spec=',shQuote_cmd(smpl_spec))
 
 
-eviews_code=r'(open {%wf}
+eviewsCode=r'(open {%wf}
 
 if %page<>"" then
 pageselect {%page}
@@ -81,14 +77,11 @@ pagesave({%options}) {%source_description} {%table_description} {%keep_list} {%d
 
 exit
 )'
-#path=here()
-  # path=getwd()
+
 writeLines(c(eviews_path(),wf,page,options,source_description,table_description,keep_list,drop_list,keepmap_list,dropmap_list,smpl_spec
-,eviews_code),fileName)
+,eviewsCode),fileName)
 
 system_exec()
-
-  # system2("EViews",paste0("exec ",shQuote(paste0(path,"/",fileName))))
 
   if(!exists("eviews") || !is.environment(eviews)) eviews<<-new.env()
 
@@ -102,6 +95,3 @@ assign(object_name,dataFrame,envir =eviews)
  on.exit(unlink(c(fileName,source_description_file)))
  }
 
-
-# import(wf="eviews/workfile",drop_list = "y")
-# param start_date Object or a character string representing the \code{start date}. It should be left blank for undated (when the \code{frequency} is \code{u}).

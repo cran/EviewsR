@@ -18,9 +18,8 @@ This package runs on top of knitr to facilitate communication with EViews. Run E
 \details{
 The \code{EViews} engine can be activated via
 
-```
-knitr::knit_engines$set(eviews = eviewsR::eng_eviews)
-```
+\if{html}{\out{<div class="sourceCode">}}\preformatted{knitr::knit_engines$set(eviews = EviewsR::eng_eviews)
+}\if{html}{\out{</div>}}
 
 This will be set within an R Markdown document's setup chunk.
 }
@@ -47,15 +46,23 @@ Other important functions:
 \code{\link{eviews_wfcreate}()},
 \code{\link{eviews_wfsave}()},
 \code{\link{exec_commands}()},
+\code{\link{export_dataframe}()},
 \code{\link{export}()},
+\code{\link{import_equation}()},
+\code{\link{import_graph}()},
+\code{\link{import_kable}()},
+\code{\link{import_series}()},
 \code{\link{import_table}()},
+\code{\link{import_workfile}()},
 \code{\link{import}()},
 \code{\link{rwalk}()},
 \code{\link{set_eviews_path}()}
 }
 \author{
 Sagiru Mati, ORCID: 0000-0003-1413-3974, https://smati.com.ng
-* Yusuf Maitama Sule (Northwest) University Kano, Nigeria
-* SMATI Academy
+\itemize{
+\item Yusuf Maitama Sule (Northwest) University Kano, Nigeria
+\item SMATI Academy
+}
 }
 \concept{important functions}

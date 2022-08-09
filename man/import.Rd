@@ -2,40 +2,50 @@
 % Please edit documentation in R/import.R
 \name{import}
 \alias{import}
-\title{Import \code{EViews} series to R as dataframe}
+\title{Import \code{EViews} series objects as dataframe}
 \usage{
-import(object_name="",wf="",page="",options="",source_description="",
-table_description="",keep_list="",drop_list="",keepmap_list="",dropmap_list="",
-smpl_spec="")
+import(
+  object_name = "",
+  wf = "",
+  page = "",
+  options = "",
+  source_description = "",
+  table_description = "",
+  keep_list = "",
+  drop_list = "",
+  keepmap_list = "",
+  dropmap_list = "",
+  smpl_spec = ""
+)
 }
 \arguments{
 \item{object_name}{Object name to be to store the imported \code{EViews} series.}
 
-\item{wf}{Object or a character string representing the name of an `EViews` workfile.}
+\item{wf}{Object or a character string representing the name of an \code{EViews} workfile.}
 
-\item{page}{Object or a character string representing the name of an `EViews` workfile page.}
+\item{page}{Object or a character string representing the name of an \code{EViews} workfile page.}
 
-\item{options}{Object or a character string of any of the acceptable `EViews` \code{pagesave} options, such as \code{noid}, \code{nomapval}, \code{nonames}.}
+\item{options}{Object or a character string of any of the acceptable \code{EViews} \code{pagesave} options, such as \code{noid}, \code{nomapval}, \code{nonames}.}
 
 \item{source_description}{The path and name of the file to be saved.}
 
 \item{table_description}{Further description of the \code{source_description} such as specifying the \code{range=arg}, \code{byrow}.}
 
-\item{keep_list}{Optional. Specify the list of `EViews` object to be saved.}
+\item{keep_list}{Optional. Specify the list of \code{EViews} object to be saved.}
 
-\item{drop_list}{Optional. Specify the list of `EViews` object to be dropped.}
+\item{drop_list}{Optional. Specify the list of \code{EViews} object to be dropped.}
 
-\item{keepmap_list}{Optional. Specify the list of patterns of `EViews` object to be saved.}
+\item{keepmap_list}{Optional. Specify the list of patterns of \code{EViews} object to be saved.}
 
-\item{dropmap_list}{Optional. Specify the list of patterns of `EViews` object to be dropped.}
+\item{dropmap_list}{Optional. Specify the list of patterns of \code{EViews} object to be dropped.}
 
-\item{smpl_spec}{Optional. Specify the `EViews` sample string}
+\item{smpl_spec}{Optional. Specify the \code{EViews} sample string}
 }
 \value{
 An EViews workfile
 }
 \description{
-Use this function to import \code{EViews} series to R as dataframe
+Use this function to import \code{EViews} series objects to R, R Markdown and Quarto as dataframe
 }
 \examples{
 library(EviewsR)
@@ -60,8 +70,14 @@ Other important functions:
 \code{\link{eviews_wfcreate}()},
 \code{\link{eviews_wfsave}()},
 \code{\link{exec_commands}()},
+\code{\link{export_dataframe}()},
 \code{\link{export}()},
+\code{\link{import_equation}()},
+\code{\link{import_graph}()},
+\code{\link{import_kable}()},
+\code{\link{import_series}()},
 \code{\link{import_table}()},
+\code{\link{import_workfile}()},
 \code{\link{rwalk}()},
 \code{\link{set_eviews_path}()}
 }

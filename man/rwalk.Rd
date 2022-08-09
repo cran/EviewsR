@@ -2,10 +2,21 @@
 % Please edit documentation in R/rwalk.R
 \name{rwalk}
 \alias{rwalk}
-\title{Simulate a random walk process using an `EViews` engine from R.}
+\title{Simulate a random walk process using an \code{EViews} engine.}
 \usage{
-rwalk(series="",wf="",page="",drift=NA,rndseed=NA,frequency="m",
-start_date="1990",end_date="2020",num_cross_sections=NA,num_observations=NA)
+rwalk(
+  series = "",
+  wf = "",
+  page = "",
+  drift = NA,
+  rndseed = NA,
+  frequency = "",
+  start_date = "",
+  end_date = "",
+  num_cross_sections = NA,
+  num_observations = NA,
+  class = "df"
+)
 }
 \arguments{
 \item{series}{Names of series for the random walk.}
@@ -16,7 +27,7 @@ start_date="1990",end_date="2020",num_cross_sections=NA,num_observations=NA)
 
 \item{drift}{Numeric value as the drift term for random walk.}
 
-\item{rndseed}{Set the `seed` for `Eviews` random number generator.}
+\item{rndseed}{Set the \code{seed} for \code{Eviews} random number generator.}
 
 \item{frequency}{Object or a character string representing the frequency of a workfile page to be created. Only letters accepted by EViews are allowed. For example \code{u} for undated, \code{a} for annual, \code{m} for monthly and so on.}
 
@@ -24,26 +35,46 @@ start_date="1990",end_date="2020",num_cross_sections=NA,num_observations=NA)
 
 \item{end_date}{Object or a character string representing the \code{end date}. It should be left blank for undated (when the \code{frequency} is \code{u}).}
 
-\item{num_cross_sections}{Optional integer value. Include \code{num_cross_sections} in order to create an `EViews` balanced panel page using integer identifiers for each of the cross-sections.}
+\item{num_cross_sections}{Optional integer value. Include \code{num_cross_sections} in order to create an \code{EViews} balanced panel page using integer identifiers for each of the cross-sections.}
 
 \item{num_observations}{Numeric value. Specify the number of observations if the \code{frequency="u"}.}
+
+\item{class}{Class of the R object: \code{df} for dataframe, or \code{xts} for extendable time-series object.}
 }
 \value{
 An EViews workfile
 }
 \description{
-Use this function to simulate a random walk process using an `EViews` engine.
+Use this function to simulate a random walk process using an \code{EViews} engine from R, R Markdown or Quarto.
 }
 \examples{
 library(EviewsR)
 \dontrun{
 
-rwalk(series="X Y Z",rndseed=12345,frequency="M",
-num_observations=100)
+# Simulate random walk and return as a dataframe object
 
-plot(eviews$XYZ[[2]],ylab = "EViewsR",type = "l",col="red")
+rwalk(series="a b e",rndseed=12345,start_date = 1990,frequency="m",num_observations=100)
 
-rwalk(wf="EviewsR_exec_commands",series="rw1 rw2 rw3",rndseed=12345,frequency="M")
+library(ggplot2)
+
+ggplot(eviews$abe,aes(x=date))+geom_line(aes(y=a,color="a"))+
+geom_line(aes(y=b,color="b"))+geom_line(aes(y=e,color="e"))+labs(colour='',x="",y="")
+
+# To simulate random walk and return as an `xts` object
+
+rwalk(series="X Y Z",rndseed=12345,start_date = 1990,frequency="m",num_observations=100,class="xts")
+
+plot(eviews$xyz)
+
+autoplot(eviews$xyz,facet="")+xlab("")
+
+
+plot(eviews$XYZ)
+
+# To simulate random walk series on existing workfile
+
+eviews_wfcreate(wf="rwalk",page="rwalk",frequency="7",start_date=2020,end_date="2022")
+rwalk(wf="rwalk",series="rw1 rw2 rw3",rndseed=12345,frequency="M")
 
 head(eviews$rw1rw2rw3)
 }
@@ -59,8 +90,14 @@ Other important functions:
 \code{\link{eviews_wfcreate}()},
 \code{\link{eviews_wfsave}()},
 \code{\link{exec_commands}()},
+\code{\link{export_dataframe}()},
 \code{\link{export}()},
+\code{\link{import_equation}()},
+\code{\link{import_graph}()},
+\code{\link{import_kable}()},
+\code{\link{import_series}()},
 \code{\link{import_table}()},
+\code{\link{import_workfile}()},
 \code{\link{import}()},
 \code{\link{set_eviews_path}()}
 }

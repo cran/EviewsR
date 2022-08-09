@@ -3,7 +3,7 @@
 #' The \code{EViews} engine can be activated via
 #'
 #' ```
-#' knitr::knit_engines$set(eviews = eviewsR::eng_eviews)
+#' knitr::knit_engines$set(eviews = EviewsR::eng_eviews)
 #' ```
 #'
 #' This will be set within an R Markdown document's setup chunk.
@@ -29,79 +29,528 @@
 #' @export
 eng_eviews <- function(options) {
 
-  save_path=paste0("EviewsR_files/",options$label)
-  if(opts_current$get("fig.path")=="") save_path=""
-  save_path=gsub("[.,-]","_",save_path)
+
+  options$eval=options$eval %n% opts_chunk$get("eval")
+
+  options$echo=options$echo %n% opts_chunk$get("echo")
+
+
+  class=options$class %n% opts_chunk$get('class')
+
+
+if(options$eval){
+
+  if(!is.null(options$out.width)) {
+  if(grepl('width',options$out.width) && is.null(options$fig.ncol)){
+    options$fig.ncol=gsub('\\\\textwidth|\\\\linewidth','',options$out.width) %>% as.numeric %>% `%/%`(1,.)
+  }
+}
+
+  fileName=tempfile("EVIEWS", ".", ".prg")
+  eviewsrText=gsub("\\.prg$",'',fileName) %>% basename
+  eviewsrText1=eviewsrText
+  eviewsrText %<>%
+    shQuote_cmd %>% paste0('%eviewsrText=',.)
+
+
+  chunkLabel=options$label
+
+  envName=chunkLabel %>% gsub("^fig-","",.) %>% gsub("[._-]","",.)
+  assign(envName,new.env(),envir=knit_global())
+
+  chunkLabel %<>%  gsub("^fig-","",.) %>% shQuote_cmd %>% paste0('%chunkLabel=',.)
+
+  save_path=options$save_path %n% opts_current$get("fig.path")
+
+  if(save_path!="" && !dir.exists(save_path)) dir.create(save_path,recursive = TRUE)
+
   save_path1=ifelse(save_path=="",".",save_path)
-  if(save_path!="" && !dir.exists(save_path)) dir.create(save_path,recursive = T)
-  save_path=paste0("%save_path=",shQuote(save_path))
-  # dir.create(save_path)
-  # dir.create(options$label)
-  # create a temporary file
-  fileName <-tempfile("EviewsR", '.', ".prg") # prg is file extension of Eviews program
+  save_path %<>% shQuote_cmd %>% paste0("%save_path=",.)
 
-  save_code=r'(
-  %graphs=@wlookup("*","graph")
+  tempDir=tempDir1=tempdir()
+  tempDir %<>% shQuote_cmd %>% paste0('%tempDir=',.)
 
-  if %save_path<>"" then
-  %save_path=%save_path+"\"
+
+
+  equation=opts_current$get("equation") %n% "*" %>% paste0(collapse = " ") %>% shQuote_cmd %>% paste0('%equation=',.)
+   graph=options$graph %n% "*"
+   if(is.numeric(graph)) figKeep='%figKeep1="numeric"' else figKeep='%figKeep1=""'
+   graph1=graph
+   graph %<>% shQuote_cmd %>% paste0('%graph=',.)
+
+
+  series=opts_current$get("series") %n% "*" %>% paste0(collapse = " ") %>% shQuote_cmd %>% paste0('%series=',.)
+   table=opts_current$get("table") %n% "*" %>% paste0(collapse = " ") %>% shQuote_cmd %>% paste0('%table=',.)
+  page=page1=opts_current$get("page") %n% "*" %>% paste0(collapse = " ")
+
+  pagePattern=page %>%   strsplit(split=" ") %>%
+    unlist() %>% paste0(collapse='|') %>% paste0('-(',.,')-')
+  page %<>% shQuote_cmd %>% paste0('%page=',.)
+
+  dev=opts_chunk$get('dev')
+  save_options=options$save_options %n% ''
+  if(!is.null(dev) && dev=="png") save_options="t=png,d=300"
+  if(!is.null(dev) && dev=="pdf" && save_options=='') save_options="t=pdf"
+  if(is.null(dev) && save_options=='') save_options="t=png,d=300"
+  # Append "d=300" if "d=" (dpi) is not defined in "save_options"
+
+  save_options1=c("t=bmp","t=gif", "t=jpg", "t=png")
+
+  if(length(intersect(save_options,save_options1)>0)){
+    if(intersect(save_options,save_options1) %in% save_options1 & sum(grepl("\\s*d\\s*=",save_options, ignore.case = T))==0) save_options=append(save_options,"d=300")
+  }
+
+  save_options2=paste0(save_options,collapse=",") %>% trimws() %>%  gsub('[[:blank:]]','',.) %>% strsplit(split=",") %>% unlist()
+
+  extensions= c("t=emf", "t=wmf", "t=eps", "t=bmp", "t=gif", "t=jpg", "t=png", "t=pdf", "t=tex", "t=md")
+
+  extension=intersect(extensions,save_options2) %>% gsub('t=','',.)
+
+  if(length(extension)==0) extension="emf"
+
+  save_options %<>% paste(collapse = ",") %>%
+  shQuote_cmd %>% paste0("%save_options=",.)
+
+
+
+
+  graphicsDefault=r'(
+
+  %pagelist=@pagelist
+
+  if %page<>"*" then
+  %pagelist=%page
   endif
 
-if @wcount(%graphs)<>0 then
-  for %y {%graphs}
-  {%y}.save(t=png,d=300) {%eviews_path}\{%save_path}{%y}
+  for %page {%pagelist}
+  pageselect {%page}
+
+  if %graph="first" then
+  %selectedGraphs=@wlookup("*","graph")
+  %selectedGraphs=@wleft(%selectedGraphs,1)
+  else if %graph="last" then
+  %selectedGraphs=@wlookup("*","graph")
+  %selectedGraphs=@wright(%selectedGraphs,1)
+  else if %graph="asis" or %graph="asc" or %graph="desc" or %figKeep1="numeric"  then
+  %selectedGraphs=@wlookup("*","graph")
+  else
+  %selectedGraphs=@wlookup(%graph,"graph")
+  endif
+  endif
+  endif
+
+  if @wcount(%selectedGraphs)>0 then
+  for %y {%selectedGraphs}
+  {%y}.axis(l) font(Calibri,14,-b,-i,-u,-s)
+  {%y}.axis(r) font(Calibri,14,-b,-i,-u,-s)
+  {%y}.axis(b) font(Calibri,14,-b,-i,-u,-s)
+  {%y}.axis(t) font(Calibri,14,-b,-i,-u,-s)
+  {%y}.legend columns(5) inbox position(BOTCENTER) font(Calibri,12,-b,-i,-u,-s)
+  {%y}.options antialias(on)
+  {%y}.options size(6,3)
+  {%y}.options -background frameaxes(all) framewidth(0.5)
+  {%y}.setelem(1) linecolor(@rgb(57,106,177)) linewidth(1.5)
+  {%y}.setelem(2) linecolor(@rgb(218,124,48)) linewidth(1.5)
+  {%y}.setelem(3) linecolor(@rgb(62,150,81)) linewidth(1.5)
+  {%y}.setelem(4) linecolor(@rgb(204,37,41)) linewidth(1.5)
+  {%y}.setelem(5) linecolor(@rgb(83,81,84)) linewidth(1.5)
+  {%y}.setelem(6) linecolor(@rgb(107,76,154)) linewidth(1.5)
+  {%y}.setelem(7) linecolor(@rgb(146,36,40)) linewidth(1.5)
+  {%y}.setelem(8) linecolor(@rgb(148,139,61)) linewidth(1.5)
+  {%y}.setelem(9) linecolor(@rgb(255,0,255)) linewidth(1.5)
+  {%y}.setelem(10) linewidth(1.5)
+  {%y}.setelem(11) linecolor(@rgb(192,192,192)) linewidth(1.5)
+  {%y}.setelem(12) linecolor(@rgb(0,255,255)) linewidth(1.5)
+  {%y}.setelem(13) linecolor(@rgb(255,255,0)) linewidth(1.5)
+  {%y}.setelem(14) linecolor(@rgb(0,0,255)) linewidth(1.5)
+  {%y}.setelem(15) linecolor(@rgb(255,0,0)) linewidth(1.5)
+  {%y}.setelem(16) linecolor(@rgb(0,127,0)) linewidth(1.5)
+  {%y}.setelem(17) linecolor(@rgb(0,0,0)) linewidth(1.5)
+  {%y}.setelem(18) linecolor(@rgb(0,127,127)) linewidth(1.5)
+  {%y}.setelem(19) linecolor(@rgb(127,0,127)) linewidth(1.5)
+  {%y}.setelem(20) linecolor(@rgb(127,127,0)) linewidth(1.5)
+  {%y}.setelem(21) linecolor(@rgb(0,0,127)) linewidth(1.5)
+  {%y}.setelem(22) linecolor(@rgb(255,0,255)) linewidth(1.5)
+  {%y}.setelem(23) linecolor(@rgb(127,127,127)) linewidth(1.5)
+  {%y}.setelem(24) linecolor(@rgb(192,192,192)) linewidth(1.5)
+  {%y}.setelem(25) linecolor(@rgb(0,255,255)) linewidth(1.5)
+  {%y}.setelem(26) linecolor(@rgb(255,255,0)) linewidth(1.5)
+  {%y}.setelem(27) linecolor(@rgb(0,0,255)) linewidth(1.5)
+  {%y}.setelem(28) linecolor(@rgb(255,0,0)) linewidth(1.5)
+  {%y}.setelem(29) linecolor(@rgb(0,127,0)) linewidth(1.5)
+  {%y}.setelem(30) linecolor(@rgb(0,0,0)) linewidth(1.5)
+  {%y}.setfont legend(Calibri,12,-b,-i,-u,-s) text(Calibri,14,-b,-i,-u,-s) obs(Calibri,14,-b,-i,-u,-s) axis(Calibri,14,-b,-i,-u,-s)
+  {%y}.setfont obs(Calibri,14,-b,-i,-u,-s)
+  {%y}.textdefault font(Calibri,14,-b,-i,-u,-s)
   next
-endif
+  endif
+  next
+  )'
 
 
 
+  graph_procs=opts_current$get('graph_procs')
 
-  %equation=@wlookup("*","equation")
+  if(!is.null(graph_procs)){
+    graph_procs=paste0("{%y}.",graph_procs)
 
-  if @wcount(%equation)<>0 then
-  for %y {%equation}
-  table {%y}_table
+    prefixGraphProcs=r'(
+    for %page {%pagelist}
+    pageselect {%page}
+
+    if %graph="first" then
+    %selectedGraphs=@wlookup("*","graph")
+    %selectedGraphs=@wleft(%selectedGraphs,1)
+    else if %graph="last" then
+    %selectedGraphs=@wlookup("*","graph")
+    %selectedGraphs=@wright(%selectedGraphs,1)
+    else if %graph="asis" or %graph="asc" or %graph="desc" or %figKeep1="numeric"  then
+    %selectedGraphs=@wlookup("*","graph")
+    else
+    %selectedGraphs=@wlookup(%graph,"graph")
+    endif
+    endif
+    endif
+
+    if @wcount(%selectedGraphs)>0 then
+    for %y {%selectedGraphs}
+    )'
+
+    suffixGraphProcs=r'(
+    next
+    endif
+    next
+    )'
+
+    graph_procs=paste0(prefixGraphProcs,graph_procs,suffixGraphProcs,collapse = '\n')
+
+    if(any(grepl("^\\s*$", graph_procs))) graph_procs=graph_procs[-grep("^\\s*$",graph_procs)]
+  }
+
+
+  equationSeriesTablePath=r'(
+  '####################### TABLES #################
+
+
+  %tablePath=""
+
+  for %page {%pagelist}
+  pageselect {%page}
+  %tables1=@wlookup(%table ,"table")
+
+  if @wcount(%tables1)<>0 then
+  for %y {%tables1}
+  %tablePath=%tablePath+" "+%page+"_"+%y+"-"+%eviewsrText
+  {%y}.save(t=csv) {%page}_{%y}-{%eviewsrText}
+  next
+  endif
+  next
+
+  text {%eviewsrText}_table
+  {%eviewsrText}_table.append {%tablePath}
+  {%eviewsrText}_table.save {%eviewsrText}-table
+
+
+  '####################### EQUATIONS #################
+
+  %equationPath=""
+
+  for %page {%pagelist}
+  pageselect {%page}
+  %equation1=@wlookup(%equation,"equation")
+
+  if @wcount(%equation1)<>0 then
+  for %y {%equation1}
+  table {%y}_table_{%eviewsrText}
 
   %equationMembers="aic df coefs  dw f fprob hq logl meandep ncoef pval r2 rbar2 regobs schwarz sddep se ssr stderrs tstats"
 
   scalar n=@wcount(%equationMembers)
   for !j =1 to n
   %x{!j}=@word(%equationMembers,{!j})
-  {%y}_table(1,!j)=%x{!j}
+  {%y}_table_{%eviewsrText}(1,!j)=%x{!j}
 
   %vectors="coefs pval stderrs tstats"
   if @wcount(@wintersect(%x{!j},%vectors))>0 then
   !eqCoef={%y}.@ncoef
-  for !i= 2 to !eqCoef+1 'first row for the header
-  {%y}_table(!i,!j)={%y}.@{%x{!j}}(!i-1)
+  for !i= 2 to !eqCoef+1
+  {%y}_table_{%eviewsrText}(!i,!j)={%y}.@{%x{!j}}(!i-1)
   next
   else
-  {%y}_table(2,!j)={%y}.@{%x{!j}}
+  {%y}_table_{%eviewsrText}(2,!j)={%y}.@{%x{!j}}
   endif
   next
 
-  {%y}_table.save(t=csv) {%eviews_path}\{%save_path}\{%y}
+  %equationPath=%equationPath+" "+%page+"_"+%y+"-"+%eviewsrText
+  {%y}_table_{%eviewsrText}.save(t=csv) {%page}_{%y}-{%eviewsrText}
 
   next
 
   endif
+  next
+
+  text {%eviewsrText}_equation
+  {%eviewsrText}_equation.append {%equationPath}
+  {%eviewsrText}_equation.save {%eviewsrText}-equation
+
+  '####################### SERIES #################
+
+  %seriesPath=""
+  for %page {%pagelist}
+  pageselect {%page}
+  %series1=@wlookup(%series,"series")
+  if @wcount(%series1)>0 then
+  pagesave {%page}-{%chunkLabel}{%eviewsrText}.csv @keep {%series1} @drop date
+  %seriesPath=%seriesPath+" "+%page+"-"+%chunkLabel+%eviewsrText
+  endif
+  next
+
+  text {%eviewsrText}_series
+  {%eviewsrText}_series.append {%seriesPath}
+  {%eviewsrText}_series.save {%eviewsrText}-series
+
 
   exit
   )'
-  writeLines(c(eviews_path(),save_path,options$code,save_code), fileName)
+
+
+  if(!identical(graph1,'asis')){
+  graphPath=r'(%save_path=@wreplace(%save_path,"* ","*")
+  %save_path=@wreplace(%save_path,"/","\")
+
+
+  if %save_path<>"" then
+  %save_path=%save_path+"\"
+  endif
+
+
+  '####################### GRAPHS #################
+
+
+  if %figKeep1="numeric" then
+  %save_path=%tempDir
+  endif
+
+  %save_path=@wreplace(%save_path,"* ","*")
+  %save_path=@wreplace(%save_path,"/","\")
+
+
+  if %save_path<>"" then
+  %save_path=%save_path+"\"
+  endif
+
+
+  %save_options=@wreplace(%save_options,"* ","*")
+
+  if %save_options<>"" then
+  %save_options="("+%save_options+")"
+  endif
+
+  %graphPath=""
+  for %page {%pagelist}
+  pageselect {%page}
+
+
+  if %graph="first" then
+  %selectedGraphs=@wlookup("*","graph")
+  %selectedGraphs=@wleft(%selectedGraphs,1)
+  else if %graph="last" then
+  %selectedGraphs=@wlookup("*","graph")
+  %selectedGraphs=@wright(%selectedGraphs,1)
+  else if %graph="asis" or %graph="asc" or %graph="desc" or %figKeep1="numeric"  then
+  %selectedGraphs=@wlookup("*","graph")
+  else
+  %selectedGraphs=@wlookup(%graph,"graph")
+  endif
+  endif
+  endif
 
 
 
- if (options$eval) system_exec()
-  # if(!exists("eviews") || !is.environment(eviews)) eviews<<-new.env()
+  if @wcount(%selectedGraphs)>0 then
+  for %selectedGraph {%selectedGraphs}
+  {%selectedGraph}.save{%save_options} {%save_path}{%chunkLabel}{%page}-{%selectedGraph}
+  %graphPath=%graphPath+" "+%chunkLabel+%page+"-"+%selectedGraph
+  next
+  endif
+  next
 
-  equations=list.files(save_path1,".csv")
 
-  equations=gsub(".csv","",equations)
-  for (i in equations){
-     assign(i,read.csv(paste0(save_path1,"/",i,".csv")),envir = eviews)
-    }
+  if @wcount(%graphPath)>0 then
+  text {%eviewsrText}_graph
+  {%eviewsrText}_graph.append {%graphPath}
+  {%eviewsrText}_graph.save  {%eviewsrText}-graph
+  endif)'
+}
 
-  on.exit(unlink(paste0(save_path1,"/",equations,".csv")),add = TRUE)
-   on.exit(unlink_eviews(),add = TRUE)
+
+
+
+  ####### GRAPH="ASIS" #####################
+
+
+
+  if(identical(graph1,"asis"))  {
+
+#### Generate graphPath from the options$code
+
+appendCode=r'(
+  %currentpage=@pagename
+  %newgraph=@wlookup("*","graph")
+  %newgraph=@wdrop(%newgraph,%existing)
+  %existing=@wlookup("*","graph")
+  if @wcount(%newgraph)>0 then
+  %graphPath=%graphPath+" "+%chunkLabel+"-"+%currentpage+"-"+%newgraph
+  endif
+ )'
+
+
+    eviewsCode=options$code %>% strsplit(split="\n") %>%
+      unlist()
+
+graphIndex=grep("^(\\s*freeze|\\s*graph)",eviewsCode) %>% rev()
+
+for (i in graphIndex) eviewsCode=append(eviewsCode,appendCode,i)
+
+    eviewsCode=append(eviewsCode,'%existing=@wlookup("*","graph")',tail(graphIndex,1)-1)
+    options$code=eviewsCode
+
+
+    graphPath=r'(if %save_path<>"" then
+    %save_path=%save_path+"\"
+    endif
+
+    %save_options=@wreplace(%save_options,"* ","*")
+
+    if %save_options<>"" then
+    %save_options="("+%save_options+")"
+    endif
+
+    for %page {%pagelist}
+    pageselect {%page}
+
+    %selectedGraphs=@wlookup("*","graph")
+
+    if @wcount(%selectedGraphs)>0 then
+    for %selectedGraph {%selectedGraphs}
+    {%selectedGraph}.save{%save_options} {%save_path}{%chunkLabel}-{%page}-{%selectedGraph}
+    next
+    endif
+    next
+
+
+    if @wcount(%graphPath)>0 then
+    text {%eviewsrText}_graph
+    {%eviewsrText}_graph.append {%graphPath}
+    {%eviewsrText}_graph.save  {%eviewsrText}-graph
+    endif
+
+
+    )'
+}
+
+
+
+  writeLines(c(eviews_path(),tempDir,figKeep,eviewsrText,chunkLabel,page,equation,graph,series,table,options$code,graphicsDefault,save_path,save_options,graph_procs,graphPath,equationSeriesTablePath), fileName)
+
+  system_exec()
+
+
+
+
+
+  ##### EQUATION ##########
+
+  if(file.exists(paste0(eviewsrText1,"-equation.txt"))) equationPath=readLines(paste0(eviewsrText1,"-equation.txt")) %>%
+    strsplit(split=" ") %>% unlist()
+
+  for (i in equationPath){
+    eviewsVectors=c('coefs', 'pval', 'stderrs', 'tstats')
+    equationDataframe=read.csv(paste0(i,".csv"))
+    equationVectors=equationDataframe[eviewsVectors]
+    equationScalars=equationDataframe[!colnames(equationDataframe) %in% eviewsVectors] %>%
+      na.omit
+    equationList=c(equationScalars,equationVectors)
+    equationName=gsub("\\-.*","",i) %>% tolower
+    assign(equationName,equationList,envir = get(envName,envir = parent.frame()))
   }
+
+
+  ##### SERIES #####
+
+
+
+  if(file.exists(paste0(eviewsrText1,'-series.txt'))){
+    seriesPath=readLines(paste0(eviewsrText1,'-series.txt')) %>% strsplit(split=" ") %>% unlist()
+    on.exit(unlink(paste0(seriesPath,".csv")))
+    for (i in seriesPath){
+      pageName=gsub("\\-.*","",i) %>% tolower
+      dataFrame=read.csv(paste0(i,".csv"))
+      if(grepl('date',colnames(dataFrame)[1])){
+        colnames(dataFrame)[1]="date"
+        dataFrame$date=as.POSIXct(dataFrame$date)
+        if(identical(class,'xts')) dataFrame=xts(dataFrame[-1],dataFrame[[1]])
+      }
+      assign(pageName,dataFrame,envir =get(envName,envir = parent.frame()))
+    }
+  }
+
+
+  ###### TABLES #####
+
+
+  if(file.exists(paste0(eviewsrText1,"-table.txt"))) tablePath=readLines(paste0(eviewsrText1,"-table.txt")) %>%
+    strsplit(split=" ") %>% unlist()
+
+  for (i in tablePath){
+    tableName=gsub("\\-.*","",i) %>% tolower
+    assign(tableName,read.csv(paste0(i,".csv")),envir = get(envName,envir = parent.frame()))
+  }
+
+
+
+  on.exit(unlink(paste0(equationPath,".csv")),add = TRUE)
+  on.exit(unlink(paste0(tablePath,".csv")),add = TRUE)
+  on.exit(unlink(paste0(seriesPath,".csv")),add = TRUE)
+  on.exit(unlink(paste0(eviewsrText1,c("-graph.txt","-equation.txt","-series.txt","-table.txt"))),add = TRUE)
+  on.exit(unlink_eviews(),add = TRUE)
+
+
+
+
+  if(file.exists(paste0(eviewsrText1,"-graph.txt"))){ graphPath=readLines(paste0(eviewsrText1,"-graph.txt")) %>%
+    strsplit(split=" ") %>% unlist() %>% tolower()
+
+  if(any(graph1=="desc")) graphPath %<>% sort(decreasing = TRUE)
+  if(any(graph1=="asc")) graphPath %<>% sort
+  if(is.numeric(graph1)) graphPath=graphPath[graph1]
+  if(identical(graph1,"asis") && !identical(page1,"*")) graphPath=graphPath[grep(pagePattern,graphPath,ignore.case = TRUE)]
+
+  if(is.numeric(graph1)) file.copy(paste0(tempDir1,'/',graphPath,'.',extension),paste0(save_path1,'/',graphPath,'.',extension),overwrite = TRUE)
+
+
+  eviewsGraphics=paste0(save_path1,'/',graphPath,'.',extension)
+
+}
+
+  on.exit(do.call(':::',list('knitr','plot_counter'))(TRUE),
+          add = TRUE) # restore plot number on.exit
+
+
+
+  if(!file.exists(paste0(eviewsrText1,"-graph.txt")))  grahicsOutput=list() else grahicsOutput=list(include_graphics(eviewsGraphics))
+
+  if(!file.exists(paste0(eviewsrText1,"-graph.txt"))) grahicsOutput="" else  grahicsOutput=engine_output(options,out =grahicsOutput)
+
+  echoCode=engine_output(options,code = options$code, out = "")
+
+  if(options$echo) return(c(echoCode,grahicsOutput)) else return(grahicsOutput)
+
+  } # end of options$eval
+
+  if(options$echo && !options$eval){
+    echoCode=engine_output(options,code = options$code, out = "")
+    return(echoCode)
+}
+
+}

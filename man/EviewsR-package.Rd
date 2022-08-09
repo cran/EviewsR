@@ -6,7 +6,7 @@
 \alias{EviewsR-package}
 \title{EviewsR: A Seamless Integration of 'Eviews' and R}
 \description{
-It allows running 'EViews'(<https://eviews.com>) program from R, R Markdown and Quarto documents. 'EViews' (Econometric Views) is a statistical software for Econometric analysis. This package integrates 'EViews' and R and also serves as an 'EViews' Knit-Engine for 'knitr' package. Write all your 'EViews' commands in R, R Markdown or Quarto documents.
+It allows running 'EViews'(\url{https://eviews.com}) program from R, R Markdown and Quarto documents. 'EViews' (Econometric Views) is a statistical software for Econometric analysis. This package integrates 'EViews' and R and also serves as an 'EViews' Knit-Engine for 'knitr' package. Write all your 'EViews' commands in R, R Markdown or Quarto documents.
 }
 \seealso{
 Useful links:
@@ -25,8 +25,14 @@ Other important functions:
 \code{\link{eviews_wfcreate}()},
 \code{\link{eviews_wfsave}()},
 \code{\link{exec_commands}()},
+\code{\link{export_dataframe}()},
 \code{\link{export}()},
+\code{\link{import_equation}()},
+\code{\link{import_graph}()},
+\code{\link{import_kable}()},
+\code{\link{import_series}()},
 \code{\link{import_table}()},
+\code{\link{import_workfile}()},
 \code{\link{import}()},
 \code{\link{rwalk}()},
 \code{\link{set_eviews_path}()}

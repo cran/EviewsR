@@ -12,9 +12,8 @@
 
 <meta name="author" content="Sagiru Mati" />
 
-<meta name="date" content="2022-05-01" />
 
-<title>EviewsR: Seamless Integration of Eviews and R</title>
+<title>EviewsR: A Seamless Integration of Eviews and R</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -332,13 +331,50 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">EviewsR: Seamless Integration of Eviews and
-R</h1>
+<h1 class="title toc-ignore">EviewsR: A Seamless Integration of Eviews
+and R</h1>
 <h4 class="author">Sagiru Mati</h4>
-<h4 class="date">2022-05-01</h4>
+<h4 class="date">Wednesday: August 10, 2022</h4>
 
 
 
+<style>
+
+img1 {
+  border:5px solid red;
+  animation: myanimation 2s infinite;
+}
+
+@keyframes myanimation {
+  from {
+     border:5px solid red;
+  }
+  to {
+     border:5px solid yellow;
+  }
+}
+
+
+img{
+border:5px solid cyan;
+}
+h1{
+text-align: center;
+border:5px solid #FFC704;
+color:DarkGreen;
+}
+h2{
+color:Green;
+ border:5px solid #FFC704;
+ filter: saturate(50%);
+}
+h3{
+color:Green;
+ border:3px solid #FFC704;
+ filter: saturate(75%);
+ }
+ 
+</style>
 <div id="about-eviewsr" class="section level1">
 <h1>About EviewsR</h1>
 <p>EviewsR is an R package that can run Eviews program from R. It also
@@ -360,14 +396,17 @@ package.</p>
 following</p>
 <ul>
 <li><p>Don’t do anything if the name of EViews executable is one of the
-following: <code>EViews12_x64</code>, <code>EViews12_x86</code>,
-<code>EViews11_x64</code>, <code>EViews11_x86</code>,
-<code>EViews10</code>. The package will find the executable
-automatically.</p></li>
+following: <code>EViews13_x64</code>,
+<code>EViews13_x86</code>,<code>EViews12_x64</code>,
+<code>EViews12_x86</code>, <code>EViews11_x64</code>,
+<code>EViews11_x86</code>,<code>EViews10_x64</code>,
+<code>EViews10_x86</code>,<code>EViews9_x64</code>,
+<code>EViews9_x86</code>, <code>EViews10</code>. The package will find
+the executable automatically.</p></li>
 <li><p>Rename the Eviews executable to <code>eviews</code> or one of the
 names above.</p></li>
-<li><p>Alternatively, you can use <code>set_eviews_path</code> function
-to set the path the EViews executable as follows:</p></li>
+<li><p>Alternatively, you can use <code>set_eviews_path()</code>
+function to set the path the EViews executable as follows:</p></li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set_eviews_path</span>(<span class="st">&quot;C:/Program Files (x86)/EViews 10/EViews10.exe&quot;</span>)</span></code></pre></div>
 </div>
@@ -378,140 +417,238 @@ to set the path the EViews executable as follows:</p></li>
 library(EviewsR)
 ```</code></pre>
 </div>
-<div id="creating-a-workfile-from-r" class="section level1">
-<h1>Creating a workfile from R</h1>
-<p>An Eviews workfile can be created using <code>eviews_wfcreate</code>
-function in R.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_wfcreate</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>,<span class="at">page=</span><span class="st">&quot;EviewsR_page&quot;</span>,<span class="at">frequency =</span> <span class="st">&quot;m&quot;</span>,</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">start_date =</span> <span class="st">&quot;1990&quot;</span>,<span class="at">end_date =</span> <span class="st">&quot;2022&quot;</span>)</span></code></pre></div>
-</div>
-<div id="eviews-chunk" class="section level1">
-<h1>Eviews chunk</h1>
-<p>A chunk for Eviews can be created by supplying <code>eviews</code> as
-the engine name as shown below:</p>
-<pre><code>```{eviews EviewsR,eval=T} 
+<div id="ways-to-use-eviewsr" class="section level1">
+<h1>Ways to use EviewsR</h1>
+<p>The package can work with base R, R Markdown or Quarto document.</p>
+<div id="eviewsr-along-with-r-markdown-or-quarto-document" class="section level2">
+<h2>EviewsR along with R Markdown or Quarto document</h2>
+<p>After loading the package, a chunk for Eviews can be created by
+supplying <code>eviews</code> as the engine name in R Markdown or Quarto
+document as shown below :</p>
+<pre><code>```{eviews} 
+#| label: fig-EviewsR
+#| eval: true
+#| fig.subcap: [&quot;X graph&quot;,&quot;Y graph&quot;]
+#| fig.cap: &quot;EViews graphs imported automatically by fig-EviewsR chunk&quot;
+
     &#39;This program is created in R Markdown with the help of EviewsR package
-  %path=@runpath
-  cd %path
-  wfcreate(page=EviewsR_page,wf=EviewsR_workfile) m 2000 2022
+  
+  wfcreate(page=EviewsRPage,wf=EviewsR_workfile) m 2000 2022
   for %y EviewsR package page1 page2
   pagecreate(page={%y}) EviewsR m 2000 2022
   next
-  pageselect EviewsR_page
+  pageselect EviewsRPage
   rndseed 123456
-  genr y=rnd
-  genr x=rnd
+  genr y=@cumsum(nrnd)
+  genr x=@cumsum(nrnd)
   equation ols.ls y c x
-  freeze(EviewsROLS,mode=overwrite) ols
+  freeze(OLSTable,mode=overwrite) ols
   freeze(EviewsR_Plot,mode=overwrite) y.line
   wfsave EviewsR_workfile
 ```  </code></pre>
 <p>The above chunk creates an Eviews program with the chunk’s content,
 then automatically open Eviews and run the program, which will create an
 Eviews workfile with pages containing monthly sample from 2000 to 2022.
-The program will also save an Eviews workfile named <code>EviewsR</code>
-in the current directory.</p>
+The program will also save an EViews workfile named
+<code>EviewsR_workfile</code> in the current directory.</p>
 <p>The <code>eviews</code> chunk automatically returns the outputs of
 each equation object as a dataframe, accessible via
-<code>eviews$equationName</code>. For example, The <span class="math inline">\(R^2\)</span> of the <code>ols</code> equation
-object is , which can be accessed using
-<code>`r eviews$ols$r2[1]`</code>.</p>
+<code>chunkLabel$pageName_equationName</code>. For example, The <span class="math inline">\(R^2\)</span> of the <code>ols</code> equation
+object is 0.423, which can be accessed using
+<code>`r EviewsR$eviewsrpage_ols$r2`</code>. We can obtain the table
+object by <code>chunkLabel$pageName_tableName</code>. Therefore,
+<code>EviewsR$eviewsrpage_olstable</code> will give us the
+<code>OLSTable</code> object as dataframe. Note the underscore
+(<code>_</code>) between the <code>pageName</code> and
+<code>equationName</code>, and between the <code>pageName</code> and
+<code>tableName</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>EviewsR<span class="sc">$</span>eviewsrpage_ols<span class="sc">$</span>r2</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>EviewsR<span class="sc">$</span>eviewsrpage_ols<span class="sc">$</span>aic</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>K<span class="ot">=</span>EviewsR<span class="sc">$</span>eviewsrpage_olstable[<span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">8</span>,<span class="dv">9</span>),<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(K)<span class="ot">=</span><span class="cn">NULL</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(K,<span class="at">row.names =</span> F,<span class="at">caption =</span> <span class="st">&#39;Selected cells of  EViews table object&#39;</span>)</span></code></pre></div>
+<p>The EViews series objects are also imported automatically as
+dataframe (by default) or <code>xts</code> objects (if we use chunk
+option <code>class=&quot;xts&quot;</code>). They are accessed via
+<code>chunkLabel$pageName</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>EviewsR<span class="sc">$</span>eviewsrpage <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div>
 </div>
-<div id="executing-eviews-commands-in-r" class="section level1">
-<h1>Executing EViews commands in R</h1>
-<p>A set of Eviews commands can be executed with the help of
-<code>exec_commands</code> function in R. The above Eviews chunk can be
-translated using this function.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exec_commands</span>(<span class="fu">c</span>(<span class="st">&#39;%path=@runpath&#39;</span>,<span class="st">&#39;cd %path&#39;</span>,</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;wfcreate(page=EviewsR_page,wf=EviewsR_workfile) m 2000 2022&#39;</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;for %y EviewsR package page1 page2&#39;</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;pagecreate(page={%y}) EviewsR m 2000 2022&#39;</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;next&#39;</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;  pageselect EviewsR_page&#39;</span>,</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;rndseed 123456&#39;</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;  genr y=rnd&#39;</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;genr x=rnd&#39;</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;equation ols.ls y c x&#39;</span>,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;freeze(EviewsROLS,mode=overwrite) ols&#39;</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;freeze(EviewsR_Plot,mode=overwrite) y.line&#39;</span>,</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;wfsave EviewsR_workfile&#39;</span>,</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;exit&#39;</span>))</span></code></pre></div>
-</div>
-<div id="simulation-of-random-walk" class="section level1">
-<h1>Simulation of random walk</h1>
-<p>A set of random walk series can be simulated in R using EViews
-engine, thanks to <code>rwalk</code> function.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rwalk</span>(<span class="at">wf=</span><span class="st">&quot;eviewsr_workfile&quot;</span>,<span class="at">series=</span><span class="st">&quot;X Y Z&quot;</span>,<span class="at">page=</span><span class="st">&quot;&quot;</span>,<span class="at">rndseed=</span><span class="dv">12345</span>,<span class="at">frequency=</span><span class="st">&quot;M&quot;</span>,<span class="at">num_observations=</span><span class="dv">100</span>)</span></code></pre></div>
-</div>
-<div id="creating-eviews-object" class="section level1">
-<h1>Creating EViews object</h1>
-<p>The function <code>create_object</code> can be used to create an
+<div id="eviewsr-along-with-base-r" class="section level2">
+<h2>EviewsR along with base R</h2>
+<div id="the-create_object-function" class="section level3">
+<h3>The create_object() function</h3>
+<p>The function <code>create_object()</code> can be used to create an
 Eviews object in the existing EViews workfile.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">create_object</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>,<span class="at">action=</span><span class="st">&quot;equation&quot;</span>,<span class="at">action_opt=</span><span class="st">&quot;&quot;</span>,<span class="at">object_name=</span><span class="st">&quot;eviews_equation&quot;</span>,<span class="at">view_or_proc=</span><span class="st">&quot;ls&quot;</span>,<span class="at">options_list=</span><span class="st">&quot;&quot;</span>,<span class="at">arg_list=</span><span class="st">&quot;y ar(1)&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">create_object</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>,<span class="at">action=</span><span class="st">&quot;equation&quot;</span>,<span class="at">action_opt=</span><span class="st">&quot;&quot;</span>,<span class="at">object_name=</span><span class="st">&quot;eviews_equation&quot;</span>,<span class="at">view_or_proc=</span><span class="st">&quot;ls&quot;</span>,<span class="at">options_list=</span><span class="st">&quot;&quot;</span>,<span class="at">arg_list=</span><span class="st">&quot;y ar(1)&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">create_object</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>,<span class="at">object_name=</span><span class="st">&quot;x1&quot;</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="at">object_type=</span><span class="st">&quot;series&quot;</span>,<span class="at">expression=</span><span class="st">&quot;y^2&quot;</span>)</span></code></pre></div>
 </div>
-<div id="importing-table-as-kable" class="section level1">
-<h1>Importing table as kable</h1>
-<p>Eviews tables can be imported as <code>kable</code> object by
-<code>import_table</code> function. Therefore, we can include the
-results of the OLS generated by the Eviews chunk using the following R
-chunk;</p>
-<p>For the OLS result only:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># options(knitr.kable.NA = &#39;&#39;)</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">import_table</span>(<span class="at">wf=</span><span class="st">&quot;EViewsR_workfile&quot;</span>,<span class="at">page=</span><span class="st">&quot;EviewsR_page&quot;</span>,<span class="at">table_name =</span> <span class="st">&quot;EViewsrOLS&quot;</span>,<span class="at">table_range =</span> <span class="st">&quot;r7c1:r10c5&quot;</span>,<span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div>
+<div id="the-eviews_graph-function" class="section level3">
+<h3>The eviews_graph() function</h3>
+<p>EViews graphs can be included in R Markdown or Quarto document by
+<code>eviews_graph()</code> function.</p>
+<p>To create graph from existing EViews series objects:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_graph</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>,<span class="at">page =</span> <span class="st">&quot;EviewsRPage&quot;</span>,<span class="at">series=</span><span class="st">&quot;x y&quot;</span>,<span class="at">mode =</span> <span class="st">&quot;overwrite&quot;</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">graph_options =</span> <span class="st">&quot;m&quot;</span>)</span></code></pre></div>
+<p>We can also create objects from an R dataframe</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Data<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">x=</span><span class="fu">cumsum</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>)),<span class="at">y=</span><span class="fu">cumsum</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>)))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_graph</span>(<span class="at">series=</span>Data,<span class="at">group=</span><span class="cn">TRUE</span>,<span class="at">start_date=</span><span class="st">&quot;1990Q4&quot;</span>,<span class="at">frequency=</span><span class="st">&quot;Q&quot;</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a> </span></code></pre></div>
 </div>
-<div id="saving-eviews-workfile" class="section level1">
-<h1>Saving EViews workfile</h1>
-<p>An EViews workfile can be saved various output formats using
-<code>eviews_wfsave</code> in function in R.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_wfsave</span>(<span class="at">wf=</span><span class="st">&quot;eviewsr_workfile&quot;</span>,<span class="at">source_description =</span> <span class="st">&quot;EviewsR_wfsave.csv&quot;</span>)</span></code></pre></div>
-</div>
-<div id="saving-eviews-page" class="section level1">
-<h1>Saving EViews page</h1>
-<p>Similar to Eviews workfile, an Eviews page can be saved in various
-formats by <code>eviews_pagesave</code> function.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_pagesave</span>(<span class="at">wf=</span><span class="st">&quot;eviewsr_workfile&quot;</span>,<span class="at">source_description =</span> <span class="st">&quot;EviewsR_pagesave.csv&quot;</span>,<span class="at">drop_list =</span> <span class="st">&quot;y&quot;</span>)</span></code></pre></div>
-</div>
-<div id="importing-data-to-eviews" class="section level1">
-<h1>Importing data to EViews</h1>
+<div id="the-eviews_import-function" class="section level3">
+<h3>The eviews_import() function</h3>
 <p>Data can be imported from external sources by
-<code>eviews_import</code> function.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_import</span>(<span class="at">wf=</span><span class="st">&quot;eviewsr_workfile&quot;</span>,<span class="at">source_description =</span> <span class="st">&quot;EviewsR_pagesave.csv&quot;</span>)</span></code></pre></div>
+<code>eviews_import()</code> function.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_import</span>(<span class="at">source_description =</span> <span class="st">&quot;eviews_import.csv&quot;</span>,<span class="at">start_date =</span> <span class="st">&quot;1990&quot;</span>,<span class="at">frequency =</span> <span class="st">&quot;m&quot;</span>,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="at">rename_string =</span> <span class="st">&quot;x ab&quot;</span>,<span class="at">smpl_string =</span> <span class="st">&quot;1990m10 1992m10&quot;</span>)</span></code></pre></div>
+<p>Alternatively, use the dataframe as the
+<code>source_description</code>.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_import</span>(<span class="at">source_description =</span> Data,<span class="at">wf=</span><span class="st">&quot;eviews_import1&quot;</span>,<span class="at">start_date =</span> <span class="st">&quot;1990&quot;</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="at">frequency =</span> <span class="st">&quot;m&quot;</span>,<span class="at">rename_string =</span> <span class="st">&quot;x ab&quot;</span>,<span class="at">smpl_string =</span> <span class="st">&quot;1990m10 1992m10&quot;</span>)</span></code></pre></div>
 </div>
-<div id="import-data-from-eviews" class="section level1">
-<h1>Import data from EViews</h1>
-<p>Use <code>import</code> function to import data from EViews to R as a
-dataframe. The function creates a new environment <code>eviews</code>,
-whose objects can be accessed via <code>eviews$object_name</code>.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">import</span>(<span class="at">object_name =</span> <span class="st">&quot;import&quot;</span>,<span class="at">wf=</span><span class="st">&quot;eviewsr_workfile&quot;</span>,<span class="at">keep_list =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>,<span class="st">&quot;y&quot;</span>))</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(eviews<span class="sc">$</span>import<span class="sc">$</span>y,<span class="at">type=</span><span class="st">&quot;l&quot;</span>,<span class="at">ylab=</span><span class="st">&quot;EviewsR&quot;</span>,<span class="at">col=</span><span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<div id="the-eviews_pagesave-function" class="section level3">
+<h3>The eviews_pagesave() function</h3>
+<p>Similar to Eviews workfile, an Eviews page can be saved in various
+formats by <code>eviews_pagesave()</code> function.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_pagesave</span>(<span class="at">wf=</span><span class="st">&quot;eviewsr_workfile&quot;</span>,<span class="at">page=</span><span class="st">&quot;EviewsRPage&quot;</span>,<span class="at">source_description =</span> <span class="st">&quot;pagesave.csv&quot;</span>,<span class="at">drop_list =</span> <span class="st">&quot;y&quot;</span>)</span></code></pre></div>
 </div>
-<div id="exporting-dataframe-to-eviews" class="section level1">
-<h1>Exporting dataframe to EViews</h1>
-<p>Use <code>export</code> function to export dataframe object to
-Eviews.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">export</span>(<span class="at">wf=</span><span class="st">&quot;eviewr_export&quot;</span>,<span class="at">source_description=</span>eviews<span class="sc">$</span>import,<span class="at">start_date =</span> <span class="st">&#39;1990&#39;</span>,<span class="at">frequency =</span> <span class="st">&quot;m&quot;</span>)</span></code></pre></div>
-<p><br><br><br><br></p>
-</div>
-<div id="eviews-graph" class="section level1">
-<h1>EViews graph</h1>
-<p>EViews graph can be included in R Markdown or Quarto document by
-<code>eviews_graph</code> function.</p>
+<div id="the-eviews_wfcreate-function" class="section level3">
+<h3>The eviews_wfcreate() function</h3>
+<p>An Eviews workfile can be created using
+<code>eviews_wfcreate()</code> function in R.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_wfcreate</span>(<span class="at">wf=</span><span class="st">&quot;eviews_wfcreate&quot;</span>,<span class="at">page=</span><span class="st">&quot;EviewsRPage&quot;</span>,<span class="at">frequency =</span> <span class="st">&quot;m&quot;</span>,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="at">start_date =</span> <span class="st">&quot;1990&quot;</span>,<span class="at">end_date =</span> <span class="st">&quot;2022&quot;</span>)</span></code></pre></div>
+<p>Create a workfile from a dataframe</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>y<span class="ot">=</span><span class="fu">runif</span>(<span class="dv">100</span>)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>x<span class="ot">=</span><span class="fu">runif</span>(<span class="dv">100</span>)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>uu<span class="ot">=</span><span class="fu">data.frame</span>(x,y)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a> <span class="fu">eviews_graph</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>,<span class="at">page =</span> <span class="st">&quot;EviewsR_page&quot;</span>,<span class="at">series=</span><span class="st">&quot;x y&quot;</span>,<span class="at">mode =</span> <span class="st">&quot;overwrite&quot;</span>,<span class="at">options =</span> <span class="st">&quot;m&quot;</span>,<span class="at">merge_graphs =</span>F,<span class="at">start_date=</span><span class="st">&quot;1&quot;</span>,<span class="at">frequency=</span><span class="st">&quot;5&quot;</span>,<span class="at">save_path =</span> <span class="st">&#39;&#39;</span>)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a> </span></code></pre></div>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_wfcreate</span>(<span class="at">source_description=</span>Data,<span class="at">wf=</span><span class="st">&quot;eviews_wfcreate1&quot;</span>,<span class="at">page=</span><span class="st">&quot;EviewsR_page&quot;</span>,<span class="at">frequency=</span><span class="st">&quot;m&quot;</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="at">start_date=</span><span class="st">&quot;1990&quot;</span>)</span></code></pre></div>
 </div>
-<div id="demo" class="section level1">
-<h1>Demo</h1>
+<div id="the-eviews_wfsave-function" class="section level3">
+<h3>The eviews_wfsave() function</h3>
+<p>An EViews workfile can be saved various output formats using
+<code>eviews_wfsave()</code> in function in R.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eviews_wfsave</span>(<span class="at">wf=</span><span class="st">&quot;eviewsr_workfile&quot;</span>,<span class="at">source_description =</span> <span class="st">&quot;wfsave.csv&quot;</span>)</span></code></pre></div>
+</div>
+<div id="the-exec_commands-function" class="section level3">
+<h3>The exec_commands() function</h3>
+<p>A set of Eviews commands can be executed with the help of
+<code>exec_commands()</code> function in R.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exec_commands</span>(<span class="fu">c</span>(<span class="st">&quot;wfcreate(wf=exec_commands,page=eviewsPage) m 2000 2022&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>eviewsCommands<span class="ot">=</span>r<span class="st">&#39;(pagecreate(page=eviewspage1) 7 2020 2022</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="st">for %page eviewspage eviewspage1</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="st">pageselect {%page}</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="st">genr y=@cumsum(nrnd)</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="st">genr x=@cumsum(nrnd)</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="st">equation ols.ls y c x</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="st">graph x_graph.line x</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="st">graph y_graph.area y</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="st">freeze(OLSTable,mode=overwrite) ols</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="st">next</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="st">)&#39;</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="fu">exec_commands</span>(<span class="at">commands=</span>eviewsCommands,<span class="at">wf=</span><span class="st">&quot;exec_commands&quot;</span>)</span></code></pre></div>
+</div>
+<div id="the-export_dataframe-function" class="section level3">
+<h3>The export_dataframe() function</h3>
+<p>Use <code>export_dataframe()</code> function to export dataframe
+object to Eviews.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">export_dataframe</span>(<span class="at">wf=</span><span class="st">&quot;export_dataframe&quot;</span>,<span class="at">source_description=</span>Data,<span class="at">start_date =</span> <span class="st">&#39;1990&#39;</span>,<span class="at">frequency =</span> <span class="st">&quot;m&quot;</span>)</span></code></pre></div>
+</div>
+<div id="the-import_equation-function" class="section level3">
+<h3>The import_equation() function</h3>
+<p>Import EViews equation data members into R, R Markdown or Quarto.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">import_equation</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>,<span class="at">page=</span><span class="st">&quot;EviewsRPage&quot;</span>,<span class="at">equation=</span><span class="st">&quot;OLS&quot;</span>)</span></code></pre></div>
+<p>To access the imported equation in base R:</p>
+</div>
+<div id="the-import_graph-function" class="section level3">
+<h3>The import_graph() function</h3>
+<p>Import EViews graph objects(s) into R, R Markdown or Quarto.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">import_graph</span>(<span class="at">wf=</span><span class="st">&quot;exec_commands&quot;</span>)</span></code></pre></div>
+<p>To import only graphs that begin with x:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">import_graph</span>(<span class="at">wf=</span><span class="st">&quot;exec_commands&quot;</span>,<span class="at">graph=</span><span class="st">&quot;x*&quot;</span>)</span></code></pre></div>
+</div>
+<div id="the-import_kable-function" class="section level3">
+<h3>The import_kable() function</h3>
+<p>Eviews tables can be imported as <code>kable</code> object by
+<code>import_kable()</code> function. Therefore, we can include the</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">import_kable</span>(<span class="at">wf=</span><span class="st">&quot;EViewsR_workfile&quot;</span>,<span class="at">page=</span><span class="st">&quot;EviewsRPage&quot;</span>,<span class="at">table =</span> <span class="st">&quot;OLSTable&quot;</span>,<span class="at">range =</span> <span class="st">&quot;r7c1:r10c5&quot;</span>,<span class="at">digits=</span><span class="dv">3</span>,<span class="at">caption =</span> <span class="st">&quot;Selected cells of EViews table imported using import_kable() function&quot;</span>)</span></code></pre></div>
+</div>
+<div id="the-import_series-function" class="section level3">
+<h3>The import_series() function</h3>
+<p>Use <code>import_series()</code> function to import data from EViews
+to R as a dataframe. The function creates a new environment
+<code>eviews</code>, whose objects can be accessed via
+<code>eviews$pageName</code>.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">import_series</span>(<span class="at">wf=</span><span class="st">&quot;eviewsr_workfile&quot;</span>)</span></code></pre></div>
+<p>To access the series in base R:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>eviews<span class="sc">$</span>eviewspage <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div>
+<p>To import the series as an <code>xts</code> object:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">import_series</span>(<span class="at">wf=</span><span class="st">&quot;eviewsr_workfile&quot;</span>,<span class="at">series =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>,<span class="st">&quot;y&quot;</span>),<span class="at">class=</span><span class="st">&#39;xts&#39;</span>)</span></code></pre></div>
+</div>
+<div id="the-import_table-function" class="section level3">
+<h3>The import_table() function</h3>
+<p>Import EViews table objects(s) into R, R Markdown or Quarto.</p>
+<p>To import all table objects across all pages</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">import_table</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>)</span></code></pre></div>
+<p>To import specific table objects, for example
+<code>OLSTable</code></p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">import_table</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>,<span class="at">table=</span><span class="st">&quot;OLStable&quot;</span>)</span></code></pre></div>
+<p>To import table objects on specific pages</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">import_table</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>,<span class="at">page=</span><span class="st">&quot; EviewsRPage&quot;</span>)</span></code></pre></div>
+<p>To access the table in base R
+(<code>eviews$pageName_tableName</code>)</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>eviews<span class="sc">$</span>eviewspage_olstable</span></code></pre></div>
+</div>
+<div id="the-import_workfile-function" class="section level3">
+<h3>The import_workfile() function</h3>
+<p>Import EViews equation data members, graph, series and table
+objects(s) into R, R Markdown or Quarto. This function is a blend of
+<code>import_equation()</code>, <code>import_graph()</code>,
+<code>import_series()</code> and <code>import_table()</code>
+functions.</p>
+<p>To import all equation, graph, series and table objects across all
+pages</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">import_workfile</span>(<span class="at">wf=</span><span class="st">&quot;EviewsR_workfile&quot;</span>)</span></code></pre></div>
+<p>To import specific objects</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">import_workfile</span>(<span class="at">wf=</span><span class="st">&quot;exec_commands&quot;</span>,<span class="at">equation=</span><span class="st">&quot;ols&quot;</span>,<span class="at">graph=</span><span class="st">&quot;x*&quot;</span>,<span class="at">series=</span><span class="st">&quot;y*&quot;</span>,<span class="at">table=</span><span class="st">&quot;ols*&quot;</span>)</span></code></pre></div>
+<p>To import objects on specific page(s)</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">import_workfile</span>(<span class="at">wf=</span><span class="st">&quot;exec_commands&quot;</span>,<span class="at">page=</span><span class="st">&quot;eviewspage eviewspage1&quot;</span>)</span></code></pre></div>
+<p>To access the objects in base R:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>eviews<span class="sc">$</span>eviewspage_ols <span class="co"># equation</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># eviewspage-x_graph # graph saved in &quot;figure/&quot; folder</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>eviews<span class="sc">$</span>eviewspage <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="co"># series</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>eviews<span class="sc">$</span>eviewspage_olstable  <span class="co"># table</span></span></code></pre></div>
+</div>
+<div id="the-rwalk-function" class="section level3">
+<h3>The rwalk() function</h3>
+<p>A set of random walk series can be simulated in R using EViews
+engine, thanks to <code>rwalk()</code> function.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rwalk</span>(<span class="at">wf=</span><span class="st">&quot;eviewsr_workfile&quot;</span>,<span class="at">series=</span><span class="st">&quot;X Y Z&quot;</span>,<span class="at">page=</span><span class="st">&quot;&quot;</span>,<span class="at">rndseed=</span><span class="dv">12345</span>,<span class="at">frequency=</span><span class="st">&quot;M&quot;</span>,<span class="at">num_observations=</span><span class="dv">100</span>,<span class="at">class=</span><span class="st">&#39;xts&#39;</span>)</span></code></pre></div>
+</div>
+<div id="demo" class="section level3">
+<h3>Demo</h3>
 <p>The demo files are included and can be accessed via
-demo(package=“EviewsR”)</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">create_object</span>())</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">eviews_graph</span>())</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">eviews_wfcreate</span>())</span></code></pre></div>
+<code>demo(package=&quot;EviewsR&quot;)</code></p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">create_object</span>())</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">eviews_graph</span>())</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">eviews_import</span>())</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">eviews_pagesave</span>())</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">eviews_wfcreate</span>())</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">eviews_wfsave</span>())</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">exec_commands</span>())</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">export_dataframe</span>())</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">import_equation</span>())</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">import_graph</span>())</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">import_kable</span>())</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">import_series</span>())</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">import_table</span>())</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">import_workfile</span>())</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">rwalk</span>())</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a><span class="fu">demo</span>(<span class="fu">set_eviews_path</span>())</span></code></pre></div>
+</div>
+</div>
 </div>
 <div id="template" class="section level1">
 <h1>Template</h1>

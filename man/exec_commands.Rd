@@ -2,22 +2,24 @@
 % Please edit documentation in R/exec_commands.R
 \name{exec_commands}
 \alias{exec_commands}
-\title{Execute `EViews` commands from R}
+\title{Execute \code{EViews} commands.}
 \usage{
-exec_commands(commands="",wf="",page="")
+exec_commands(commands = "", wf = "", page = "", save_path = "")
 }
 \arguments{
-\item{commands}{Object or a vector of character strings of `EViews` commands}
+\item{commands}{Object or a vector of character strings of \code{EViews} commands}
 
-\item{wf}{Object or a character string representing the name of a workfile to be created}
+\item{wf}{Object or a character string representing the name of an \code{EViews} workfile.}
 
-\item{page}{Object or a character string representing the name of a workfile page to be created}
+\item{page}{Object or a character string representing the name of an \code{EViews} workfile page.}
+
+\item{save_path}{Object or a character string representing the path to the folder to save the \code{EViews} graphs. The current working directory is the default \code{save_path}. Specify the \code{save_path} only if you want the \code{EViews} graphs to live in different path from the current working directory.}
 }
 \value{
 An EViews workfile
 }
 \description{
-Use this function to execute `EViews` commands from R
+Use this function  in R, R Markdown and Quarto to execute \code{EViews} commands.
 }
 \examples{
 library(EviewsR)
@@ -25,23 +27,26 @@ library(EviewsR)
 # The first example creates an `EViews` workfile with monthly frequency from 1990 2021,
 # then save the workfile in the current working directory
 
-exec_commands(c("wfcreate(wf=EviewsR_exec_commands,page=Page) m 2000 2022",
-"save EviewsR_exec_commands","exit"))
-
+exec_commands(c("wfcreate(wf=exec_commands,page=eviewsPage) m 2000 2022"))
 
 # The second example opens the `EViews` workfile and then generate a random series
 # named `y` and plots its line graph. It also freezes `ols` equation as `EviewsROLS`
 
-eviewsCommands=r'(genr y=rnd
-genr x=rnd
+eviewsCommands=r'(pagecreate(page=eviewspage1) 7 2020 2022
+for \%page eviewspage eviewspage1
+pageselect {\%page}
+genr y=@cumsum(nrnd)
+genr x=@cumsum(nrnd)
 equation ols.ls y c x
-freeze(EviewsROLS,mode=overwrite) ols)'
+graph x_graph.line x
+graph y_graph.area y
+freeze(OLSTable,mode=overwrite) ols
+next
+)'
 
-exec_commands(commands=eviewsCommands,wf="EviewsR_exec_commands")
+exec_commands(commands=eviewsCommands,wf="exec_commands")
 
-# unlink("EviewsR_exec_commands.wf1")
-
-
+# unlink("exec_commands.wf1")
 }
 }
 \seealso{
@@ -54,8 +59,14 @@ Other important functions:
 \code{\link{eviews_pagesave}()},
 \code{\link{eviews_wfcreate}()},
 \code{\link{eviews_wfsave}()},
+\code{\link{export_dataframe}()},
 \code{\link{export}()},
+\code{\link{import_equation}()},
+\code{\link{import_graph}()},
+\code{\link{import_kable}()},
+\code{\link{import_series}()},
 \code{\link{import_table}()},
+\code{\link{import_workfile}()},
 \code{\link{import}()},
 \code{\link{rwalk}()},
 \code{\link{set_eviews_path}()}

@@ -2,11 +2,21 @@
 % Please edit documentation in R/eviews_wfcreate.R
 \name{eviews_wfcreate}
 \alias{eviews_wfcreate}
-\title{Create an `EViews` workfile from R}
+\title{Create an \code{EViews} workfile.}
 \usage{
-eviews_wfcreate(source_description="",wf="",page="",prompt=F,frequency="",
-subperiod_opts="",start_date="",end_date="",num_cross_sections=NA,num_observations=NA,
-save_path="")
+eviews_wfcreate(
+  source_description = "",
+  wf = "",
+  page = "",
+  prompt = FALSE,
+  frequency = "",
+  subperiod_opts = "",
+  start_date = "",
+  end_date = "",
+  num_cross_sections = NA,
+  num_observations = NA,
+  save_path = dirname(wf)
+)
 }
 \arguments{
 \item{source_description}{Description of the file from which the data is to be imported. The specification of the description is usually just the path and file name of the file.}
@@ -15,7 +25,7 @@ save_path="")
 
 \item{page}{Object or a character string representing the name of a workfile page to be created}
 
-\item{prompt}{Logical, whether to force the dialog to appear from within an `EViews` program}
+\item{prompt}{Logical, whether to force the dialog to appear from within an \code{EViews} program}
 
 \item{frequency}{Object or a character string representing the frequency of a workfile page to be created. Only letters accepted by EViews are allowed. For example \code{u} for undated, \code{a} for annual, \code{m} for monthly and so on.}
 
@@ -25,23 +35,30 @@ save_path="")
 
 \item{end_date}{Object or a character string representing the \code{end date}. It should be left blank for undated (when the \code{frequency} is \code{u}).}
 
-\item{num_cross_sections}{Optional integer value. Include \code{num_cross_sections} in order to create an `EViews` balanced panel page using integer identifiers for each of the cross-sections.}
+\item{num_cross_sections}{Optional integer value. Include \code{num_cross_sections} in order to create an \code{EViews} balanced panel page using integer identifiers for each of the cross-sections.}
 
 \item{num_observations}{Numeric value. Specify the number of observations if the \code{frequency="u"}.}
 
-\item{save_path}{Specify where to save the `EViews` workfile.}
+\item{save_path}{Specify where to save the \code{EViews} workfile.}
 }
 \value{
 An EViews workfile
 }
 \description{
-Use this function to create an `EViews` workfile from R
+Use this function  in R, R Markdown and Quarto to create an \code{EViews} workfile.
 }
 \examples{
 library(EviewsR)
 \dontrun{
-eviews_wfcreate(wf="EviewsR_eviews_wfcreate",page="EviewsR_page",frequency = "m",
+eviews_wfcreate(wf="eviews_wfcreate",page="EviewsR_page",frequency = "m",
 start_date = "1990",end_date = "2022")
+
+# Create a workfile from a dataframe
+
+Data=data.frame(x=cumsum(rnorm(100)),y=cumsum(rnorm(100)))
+
+eviews_wfcreate(source_description=Data,wf="eviews_wfcreate1",page="EviewsR_page",frequency="m",
+start_date="1990")
 }
 }
 \seealso{
@@ -54,8 +71,14 @@ Other important functions:
 \code{\link{eviews_pagesave}()},
 \code{\link{eviews_wfsave}()},
 \code{\link{exec_commands}()},
+\code{\link{export_dataframe}()},
 \code{\link{export}()},
+\code{\link{import_equation}()},
+\code{\link{import_graph}()},
+\code{\link{import_kable}()},
+\code{\link{import_series}()},
 \code{\link{import_table}()},
+\code{\link{import_workfile}()},
 \code{\link{import}()},
 \code{\link{rwalk}()},
 \code{\link{set_eviews_path}()}

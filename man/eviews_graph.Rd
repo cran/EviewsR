@@ -2,52 +2,77 @@
 % Please edit documentation in R/eviews_graph.R
 \name{eviews_graph}
 \alias{eviews_graph}
-\title{Create an `EViews` graph in R and R Markdown}
+\title{Create an \code{EViews} graph in R, R Markdown and Quarto.}
 \usage{
-eviews_graph(series="",wf="",page="",mode="overwrite",graph_command="line",
-options="m",frequency="7",start_date="",save_options=c("t=png","d=300","color"),
-save_path="",graph_procs=c('textdefault font("Times",20,-b,-i,-u,-s)','align(2,1,1)'),
-datelabel="",merge_graphs=FALSE)
+eviews_graph(
+  wf = "",
+  page = "*",
+  series = "*",
+  group = FALSE,
+  graph_command = "line",
+  graph_options = "",
+  mode = "overwrite",
+  graph_procs = "",
+  datelabel = "",
+  save_options = "",
+  save_path = "",
+  frequency = "m",
+  start_date = "",
+  save_copy = TRUE
+)
 }
 \arguments{
-\item{series}{A vector of series names contained in an `EViews` workfile, or an R dataframe.}
+\item{wf}{Object or a character string representing the name of an \code{EViews} workfile.}
 
-\item{wf}{Object or a character string representing the name of an `EViews` workfile.}
+\item{page}{Object or a character string representing the name of an \code{EViews} workfile page.}
 
-\item{page}{Object or a character string representing the name of an `EViews` workfile page.}
+\item{series}{A vector of names or wildcard expressions for series object(s) contained in an \code{EViews} workfile. An R dataframe is also acceptable.}
 
-\item{mode}{Set `mode="overwrite"` to overwrite existing `EViews` graph objects that match the new `EViews` graph object to be created on the workfile. Set `mode=""` to avoid overwriting exising `EViews` graph object.}
+\item{group}{Logical, whether to use group view in EViews, that is merge two or more graphs on one page. Setting \code{group=FALSE} produces \code{EViews} graph for each series separately.}
 
-\item{graph_command}{Object or a character string of any of the acceptable `EViews` graphical commands, such as \code{line}, \code{bar}, \code{pie}.}
+\item{graph_command}{Object or a character string of any of the acceptable \code{EViews} graphical commands, such as \code{line}, \code{bar}, \code{pie}.}
 
-\item{options}{Object or a character string of any of the acceptable `EViews` graphical options, such as \code{""}, \code{m}, \code{s}.}
+\item{graph_options}{Object or a character string of any of the acceptable \code{EViews} graphical options, such as \code{""}, \code{m}, \code{s}.}
+
+\item{mode}{Set \code{mode="overwrite"} to overwrite existing \code{EViews} graph objects that match the new \code{EViews} graph object to be created on the workfile. Set \code{mode=""} to avoid overwriting exising \code{EViews} graph object.}
+
+\item{graph_procs}{A vector containing \code{EViews} graph \code{procs} such as \code{datelabel}, \code{align}}
+
+\item{datelabel}{A vector containing \code{EViews} axis label formats such as \code{format("YY")}. Using \code{datelabel} in \code{graph_procs} overwrites this argument.}
+
+\item{save_options}{A vector of options to be passed to \code{EViews} \code{save} command. It can take values like \code{"t=png"},\code{-c} and so on.}
+
+\item{save_path}{Object or a character string representing the path to the folder to save the \code{EViews} graphs. The current working directory is the default \code{save_path}. Specify the \code{save_path} only if you want the \code{EViews} graphs to live in different path from the current working directory.}
 
 \item{frequency}{Object or a character string representing the frequency of a workfile page to be created. Only letters accepted by EViews are allowed. For example \code{u} for undated, \code{a} for annual, \code{m} for monthly and so on.}
 
 \item{start_date}{Object or a character string representing the \code{start date}. It should be left blank for undated (when the \code{frequency} is \code{u}).}
 
-\item{save_options}{A vector of options to be passed to `EViews` \code{save} command. It can values like \code{"t=png"},\code{-color} and so on.}
-
-\item{save_path}{Object or a character string representing the path to the folder to save the `EViews` graphs. The current working directory is the default `save_path`. Specify the `save_path` only if you want the `EViews` graphs to live in different path from the current working directory.}
-
-\item{graph_procs}{A vector containing `EViews` graph \code{procs} such as \code{datelabel}, \code{align}}
-
-\item{datelabel}{A vector containing `EViews` axis label formats such as \code{format("YY")}. Using \code{datelabel} in \code{graph_procs} overwrites this argument.}
-
-\item{merge_graphs}{Logical, whether to merge two or more graphs on one page. Setting \code{merge_graphs=FALSE} produces `EViews` graph for each series separately.}
+\item{save_copy}{Logical. Whether to save the copy of the graph objects.}
 }
 \value{
 An EViews workfile
 }
 \description{
-Use this function to create an `EViews` graph in R and R Markdown
+Use this function to create an \code{EViews} graph in R and R Markdown
 }
 \examples{
 library(EviewsR)
 \dontrun{
 demo(exec_commands)
-eviews_graph(wf="EviewsR_exec_commands",page = "page",series="x y",mode = "overwrite",options = "m")
 
+eviews_graph(wf="exec_commands",page = "eviewspage1",series="x y",mode = "overwrite",
+graph_options = "m")
+
+# Create graph(s) from dataframe
+
+Data=data.frame(x=cumsum(rnorm(100)),y=cumsum(rnorm(100)))
+
+eviews_graph(series=Data,start_date=1990,frequency="m")
+
+# Create graphs in one frame (group=TRUE)
+
+eviews_graph(series=Data,group=TRUE,start_date="1990Q4",frequency="Q")
 }
 }
 \seealso{
@@ -60,8 +85,14 @@ Other important functions:
 \code{\link{eviews_wfcreate}()},
 \code{\link{eviews_wfsave}()},
 \code{\link{exec_commands}()},
+\code{\link{export_dataframe}()},
 \code{\link{export}()},
+\code{\link{import_equation}()},
+\code{\link{import_graph}()},
+\code{\link{import_kable}()},
+\code{\link{import_series}()},
 \code{\link{import_table}()},
+\code{\link{import_workfile}()},
 \code{\link{import}()},
 \code{\link{rwalk}()},
 \code{\link{set_eviews_path}()}
