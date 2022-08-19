@@ -34,15 +34,17 @@ import_kable=function(wf="",page="",table="",range="",format=kable_format(), dig
                      "", "", "", "\\addlinespace") else "\\hline", caption.short = "", table.envir = if (!is.null(caption)) "table",...){
 
   fileName=basename(tempfile("EVIEWS", ".", ".prg"))
-
+  eviewsr_text=fileName %>% gsub('(\\.prg|EVIEWS)','',.)
+  eviewsr_text1=eviewsr_text
+  eviewsr_text %<>% shQuote_cmd %>% paste0('%eviewsr_text=',.)
   wf=paste0('%wf=',shQuote_cmd(wf))
   page=paste0('%page=',shQuote_cmd(page))
-  table.csv=paste0(table,".csv")
+  table.csv=paste0(table,"_",eviewsr_text1,".csv")
   range=paste0('%range=',shQuote_cmd(range))
   table=paste0('%table=',shQuote_cmd(table))
 
 
-  eviewsCode=r'(open {%wf}
+  eviewsCode='open {%wf}
 
   if %page<>"" then
   pageselect {%page}
@@ -52,24 +54,24 @@ import_kable=function(wf="",page="",table="",range="",format=kable_format(), dig
   %range=",r="+%range
   endif
 
-  {%table}.save(t=csv{%range}) {%table})'
+  {%table}.save(t=csv{%range}) {%table}_{%eviewsr_text}'
 
-  writeLines(c(eviews_path(),wf,page,table,range,eviewsCode,"exit"),fileName)
+  writeLines(c(eviews_path(),eviewsr_text,wf,page,table,range,eviewsCode,"exit"),fileName)
 
   system_exec()
-  #on.exit(unlink(c(paste0(path,"/",fileName),paste0(path,"/",table.csv))))
+  on.exit(unlink(table.csv),add = TRUE)
   on.exit(unlink_eviews(),add = TRUE)
 
-  table= readLines(table.csv)
+  eviewsTable= readLines(table.csv)
 
 
 
-   if(any(grepl("^,.*,$", table))) table=table[-grep("^,.*,$", table)]
+   if(any(grepl("^,.*,$", eviewsTable))) eviewsTable=eviewsTable[-grep("^,.*,$", eviewsTable)]
 
-  table=read.csv(text=table,allowEscapes = T,header = T,check.names = FALSE)
+  eviewsTable=read.csv(text=eviewsTable,allowEscapes = T,header = T,check.names = FALSE)
 
 
-  kable(x = table, format = format, digits = digits,
+  kable(x = eviewsTable, format = format, digits = digits,
         row.names = row.names, col.names = col.names,
         align = align, caption = caption, label = label,
         format.args = format.args, escape = escape,

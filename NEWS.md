@@ -1,3 +1,11 @@
+# EviewsR 0.1.4
+
+What's new?
+
+* Removed R 4.X features so that the package can be installed in older R versions (thanks, @yihui #2)
+
+* Updated vignettes
+
 # EviewsR 0.1.3
 
 What's new?
