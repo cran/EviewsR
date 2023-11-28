@@ -44,7 +44,7 @@ import_graph=function(wf="",page="*",graph="*",graph_procs="",save_options="",sa
   chunkLabel=opts_current$get("label")
 
   dev=opts_current$get('dev')
-
+  if(identical(graph_procs,"") && !is.null(opts_current$get('graph_procs'))) graph_procs=opts_current$get('graph_procs')
 
 graph1=graph
 
@@ -109,7 +109,7 @@ eviewsrText %<>%
     endif
     next'
 
-  graph_procs=paste0(prefixGraphProcs,graph_procs,suffixGraphProcs,collapse = '\n')
+  graph_procs=paste0(c(prefixGraphProcs,graph_procs,suffixGraphProcs),collapse = '\n')
 
   if(any(grepl("^\\s*$", graph_procs))) graph_procs=graph_procs[-grep("^\\s*$",graph_procs)]
 }

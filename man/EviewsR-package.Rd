@@ -6,7 +6,7 @@
 \alias{EviewsR-package}
 \title{EviewsR: A Seamless Integration of 'EViews' and R}
 \description{
-It allows running 'EViews'(\url{https://eviews.com}) program from R, R Markdown and Quarto documents. 'EViews' (Econometric Views) is a statistical software for Econometric analysis. This package integrates 'EViews' and R and also serves as an 'EViews' Knit-Engine for 'knitr' package. Write all your 'EViews' commands in R, R Markdown or Quarto documents.
+It allows running 'EViews' (\url{https://eviews.com}) program from R, R Markdown and Quarto documents. 'EViews' (Econometric Views) is a statistical software for Econometric analysis. This package integrates 'EViews' and R and also serves as an 'EViews' Knit-Engine for 'knitr' package. Write all your 'EViews' commands in R, R Markdown or Quarto documents. For details, please consult our peer-review article Mati S., Civcir I. and Abba S.I (2023) \doi{10.32614/RJ-2023-045}.
 }
 \seealso{
 Useful links:
@@ -38,7 +38,7 @@ Other important functions:
 \code{\link{set_eviews_path}()}
 }
 \author{
-\strong{Maintainer}: Sagiru Mati \email{smati@smati.com.ng} (\href{https://orcid.org/0000-0003-1413-3974}{ORCID})
+\strong{Maintainer}: Sagiru Mati \email{sagirumati@gmail.com} (\href{https://orcid.org/0000-0003-1413-3974}{ORCID})
 
 }
 \concept{important functions}
